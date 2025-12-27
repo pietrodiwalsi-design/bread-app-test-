@@ -38,34 +38,45 @@
     let receptenLijst = [];
 
     async function haalData() {
-        const zoekterm = document.getElementById('zoekveld').value || 'bread';
-        const inhoud = document.getElementById('inhoud');
-        document.getElementById('scherm-hoofd').style.display = 'none';
-        document.getElementById('scherm-resultaat').style.display = 'block';
+    const zoekterm = document.getElementById('zoekveld').value || 'bread';
+    const inhoud = document.getElementById('inhoud');
+    document.getElementById('scherm-hoofd').style.display = 'none';
+    document.getElementById('scherm-resultaat').style.display = 'block';
+    
+    inhoud.innerHTML = "<p>Bezig met doorzoeken van meerdere databases...</p>";
+
+    // Hier kunnen we in de toekomst meerdere 'fetch' verzoeken tegelijk doen
+    try {
+        const url1 = `https://www.themealdb.com/api/json/v1/1/search.php?s=${zoekterm}`;
         
-        inhoud.innerHTML = "<p>Bezig met zoeken...</p>";
+        const [res1] = await Promise.all([
+            fetch(url1)
+        ]);
 
-        try {
-            const res = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${zoekterm}`);
-            const data = await res.json();
-            
-            if (data.meals) {
-                receptenLijst = data.meals;
-                inhoud.innerHTML = `<h3>Resultaten voor ${zoekterm}:</h3>`;
-                data.meals.forEach((recept, i) => {
-                    inhoud.innerHTML += `
-                        <div class="recept-kaart" onclick="toonRecept(${i})">
-                            <b>${recept.strMeal}</b> (Klik voor recept)
-                        </div>`;
-                });
-            } else {
-                inhoud.innerHTML = "<p>Geen brood gevonden met die naam.</p>";
-            }
-        } catch (fout) {
-            inhoud.innerHTML = "<p>Er is een verbindingsfout.</p>";
+        const data1 = await res1.json();
+        
+        // We combineren de resultaten
+        let alleResultaten = [];
+        if (data1.meals) alleResultaten = [...data1.meals];
+
+        if (alleResultaten.length > 0) {
+            receptenLijst = alleResultaten;
+            inhoud.innerHTML = `<h3>${alleResultaten.length} recepten gevonden:</h3>`;
+            alleResultaten.forEach((recept, i) => {
+                // We voegen een label toe om te zien waar het recept vandaan komt
+                inhoud.innerHTML += `
+                    <div class="recept-kaart" onclick="toonRecept(${i})">
+                        <span style="font-size: 0.7em; background: #d7ccc8; padding: 2px 5px; border-radius: 3px;">BRON: MEALDB</span><br>
+                        <b>${recept.strMeal}</b>
+                    </div>`;
+            });
+        } else {
+            inhoud.innerHTML = "<p>Geen resultaten gevonden. Probeer een andere term.</p>";
         }
+    } catch (fout) {
+        inhoud.innerHTML = "<p>Fout bij ophalen van data. Controleer je verbinding.</p>";
     }
-
+}
     function toonRecept(index) {
         const r = receptenLijst[index];
         const inhoud = document.getElementById('inhoud');
