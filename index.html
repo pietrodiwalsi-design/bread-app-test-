@@ -7,16 +7,16 @@
     <style>
         :root { --brown-dark: #4e342e; --brown-light: #8d6e63; --beige: #fdf5e6; }
         body { font-family: 'Segoe UI', sans-serif; background-color: var(--beige); color: var(--brown-dark); margin: 0; padding: 0; }
-        .app-container { max-width: 500px; margin: auto; background: white; min-height: 100vh; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
+        .app-container { max-width: 500px; margin: auto; background: white; min-height: 100vh; box-shadow: 0 0 20px rgba(0,0,0,0.1); padding-bottom: 20px; }
         header { background: var(--brown-dark); color: white; padding: 25px; text-align: center; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; }
         .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
         .card { background: #fff; border: 1px solid #ddd; padding: 15px; border-radius: 15px; text-align: center; cursor: pointer; transition: 0.2s; }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .card i { font-size: 2em; display: block; margin-bottom: 10px; }
         .search-area { padding: 0 20px; }
         input { width: 100%; padding: 12px; border-radius: 25px; border: 1px solid #ccc; box-sizing: border-box; }
         #results { padding: 20px; }
-        .recipe-item { border-bottom: 1px solid #eee; padding: 10px 0; list-style: none; }
+        .recipe-item { border-bottom: 1px solid #eee; padding: 15px 0; list-style: none; }
+        .detail-card { background: white; padding: 15px; border-radius: 12px; border: 1px solid #ddd; }
+        .btn-terug { background: var(--brown-light); color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; margin-bottom: 10px; width: 100%; }
     </style>
 </head>
 <body>
@@ -32,44 +32,45 @@
         <input type="text" id="zoekterm" placeholder="Zoek recept (bv. Rye, French...)" onkeyup="if(event.key==='Enter') haalData()">
     </div>
 
-    <div class="menu-grid">
-        <div class="card" onclick="toonInfo('gist')"><span>🥐</span>Gist Tips</div>
-        <div class="card" onclick="toonInfo('zuurdesem')"><span>🥖</span>Zuurdesem</div>
-        <div class="card" onclick="haalData()"><span>🌍</span>Publieke Data</div>
-        <div class="card" onclick="alert('AI functie: Verbinden met API...')"><span>🤖</span>AI Hulp</div>
+    <div id="hoofdmenu">
+        <div class="menu-grid">
+            <div class="card" onclick="toonInfo('gist')"><span>🥐</span>Gist Tips</div>
+            <div class="card" onclick="toonInfo('zuurdesem')"><span>🥖</span>Zuurdesem</div>
+            <div class="card" onclick="haalData()"><span>🌍</span>Publieke Data</div>
+            <div class="card" onclick="alert('AI functie wordt geladen...')"><span>🤖</span>AI Hulp</div>
+        </div>
     </div>
 
-    <div id="results">
-        </div>
+    <div id="results"></div>
 </div>
 
 <script>
-    // We maken een variabele om de opgehaalde recepten in op te slaan
     let huidigeRecepten = [];
 
     async function haalData() {
         const term = document.getElementById('zoekterm').value || 'bread';
         const resDiv = document.getElementById('results');
+        const menu = document.getElementById('hoofdmenu');
+        
         resDiv.innerHTML = "<p>Bezig met ophalen...</p>";
+        menu.style.display = "none"; // Verberg menu voor meer ruimte
 
         try {
             const response = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${term}`);
             const data = await response.json();
-            resDiv.innerHTML = `<h3>Resultaten voor "${term}":</h3>`;
             
             if(data.meals) {
-                huidigeRecepten = data.meals; // Sla de data op om later te gebruiken
+                huidigeRecepten = data.meals;
+                resDiv.innerHTML = `<h3>Resultaten voor "${term}":</h3><button class="btn-terug" onclick="resetApp()">⬅ Terug naar Menu</button>`;
                 data.meals.forEach((meal, index) => {
-                    // We voegen 'onclick' toe zodat je op het recept kunt klikken
                     resDiv.innerHTML += `
-                        <div class="recipe-item" onclick="toonReceptDetail(${index})" style="cursor:pointer; background: #fff; padding: 10px; margin-bottom: 5px; border-radius: 8px;">
-                            <img src="${meal.strMealThumb}" style="width:30px; vertical-align:middle; border-radius:4px; margin-right:10px;">
+                        <div class="recipe-item" onclick="toonReceptDetail(${index})" style="cursor:pointer;">
+                            <img src="${meal.strMealThumb}" style="width:40px; border-radius:5px; margin-right:10px; vertical-align:middle;">
                             <b>${meal.strMeal}</b>
-                            <small style="display:block; color: gray;">Klik voor recept ➔</small>
                         </div>`;
                 });
             } else {
-                resDiv.innerHTML += "<p>Niets gevonden.</p>";
+                resDiv.innerHTML = "<h3>Niets gevonden</h3><button class="btn-terug" onclick="resetApp()">⬅ Terug</button>";
             }
         } catch (e) {
             resDiv.innerHTML = "<p>Fout bij verbinden.</p>";
@@ -80,23 +81,30 @@
         const meal = huidigeRecepten[index];
         const resDiv = document.getElementById('results');
         
-        // We veranderen de inhoud van de resultaten-div naar het volledige recept
         resDiv.innerHTML = `
-            <button onclick="haalData()" style="background:#8d6e63; color:white; border:none; padding:10px; border-radius:5px; margin-bottom:10px;">⬅ Terug naar lijst</button>
-            <div style="background: white; padding: 15px; border-radius: 12px; border: 1px solid #ddd;">
+            <button class="btn-terug" onclick="haalData()">⬅ Terug naar Lijst</button>
+            <div class="detail-card">
                 <img src="${meal.strMealThumb}" style="width:100%; border-radius:10px;">
                 <h2>${meal.strMeal}</h2>
-                <h4>Instructies:</h4>
-                <p style="white-space: pre-line; line-height: 1.5;">${meal.strInstructions}</p>
-                <a href="${meal.strYoutube}" target="_blank" style="color: red; text-decoration: none; font-weight: bold;">📺 Bekijk op YouTube</a>
+                <p><i>Categorie: ${meal.strCategory} | Regio: ${meal.strArea}</i></p>
+                <hr>
+                <h4>Bereidingswijze:</h4>
+                <p style="white-space: pre-line;">${meal.strInstructions}</p>
+                ${meal.strYoutube ? `<a href="${meal.strYoutube}" target="_blank" style="color:red; font-weight:bold; text-decoration:none;">📺 Bekijk Video</a>` : ''}
             </div>
         `;
     }
 
+    function resetApp() {
+        document.getElementById('results').innerHTML = "";
+        document.getElementById('hoofdmenu').style.display = "block";
+    }
+
     function toonInfo(type) {
+        document.getElementById('hoofdmenu').style.display = "none";
         const resDiv = document.getElementById('results');
-        if(type === 'gist') resDiv.innerHTML = "<h3>Gist Tips</h3><p>Gebruik water van 37°C. Te heet water doodt de cellen.</p>";
-        if(type === 'zuurdesem') resDiv.innerHTML = "<h3>Zuurdesem</h3><p>Geduld is de belangrijkste factor. Gebruik een hydratatie van 70%.</p>";
+        let tekst = type === 'gist' ? "Gebruik water van 37 graden." : "Zuurdesem heeft tijd nodig (min. 8 uur).";
+        resDiv.innerHTML = `<h3>Tips</h3><p>${tekst}</p><button class="btn-terug" onclick="resetApp()">⬅ Terug</button>`;
     }
 </script>
 
