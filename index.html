@@ -9,12 +9,14 @@
         .app { max-width: 500px; margin: auto; background: white; min-height: 95vh; padding: 20px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
         header { text-align: center; border-bottom: 2px solid #8d6e63; margin-bottom: 20px; }
         .menu-knop { background: #8d6e63; color: white; padding: 15px; margin: 10px 0; border-radius: 12px; cursor: pointer; text-align: center; font-weight: bold; }
+        .sub-knop { background: #a1887f; color: white; padding: 10px; margin: 5px 0; border-radius: 8px; cursor: pointer; text-align: center; font-size: 0.9em; }
         .calc-knop { background: #5d4037; color: white; padding: 15px; margin: 10px 0; border-radius: 12px; cursor: pointer; text-align: center; font-weight: bold; }
-        input, select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ccc; box-sizing: border-box; margin-bottom: 10px; font-size: 16px; }
+        input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ccc; box-sizing: border-box; margin-bottom: 10px; }
         .recept-kaart { background: #fff; border: 1px solid #eee; padding: 15px; margin-top: 10px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; }
         .recept-kaart img { width: 60px; height: 60px; border-radius: 8px; margin-right: 15px; object-fit: cover; }
         .terug-knop { background: #5d4037; color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; margin-bottom: 15px; cursor: pointer; }
-        .resultaat-box { background: #e8f5e9; padding: 15px; border-radius: 10px; border: 1px solid #c8e6c9; text-align: center; font-size: 1.2em; }
+        .info-blok { text-align: left; line-height: 1.5; background: #fafafa; padding: 15px; border-radius: 10px; border-left: 4px solid #8d6e63; }
+        .resultaat-box { background: #e8f5e9; padding: 15px; border-radius: 10px; text-align: center; }
     </style>
 </head>
 <body>
@@ -30,7 +32,7 @@
         <div class="menu-knop" onclick="toonPanasonicLijst()">📟 Panasonic Recepten</div>
         <div class="calc-knop" onclick="toonTimerCalc()">⏰ Panasonic Timer Calculator</div>
         <div class="menu-knop" onclick="toonInfo('gist')">🥐 Gist Tips</div>
-        <div class="menu-knop" onclick="toonInfo('zuur')">🥖 Zuurdesem Tips</div>
+        <div class="menu-knop" onclick="toonZuurdesemMenu()">🌿 Zuurdesem Gids</div>
     </div>
 
     <div id="scherm-resultaat" style="display:none;">
@@ -41,41 +43,91 @@
 
 <script>
     var MIJN_SLEUTEL = "2386c821382b4094a3045c9c6ffd588d"; 
-    var opgeslagenLijst = [];
 
-    // --- DATABASES ---
+    // --- RECEPTEN ---
     var panasonicRecepten = [
-        { titel: "Basis Wit Brood", programma: "Menu 1 (4u)", ingrediënten: ["1 tl gist", "400g bloem", "20g boter", "1 el suiker", "1.5 tl zout", "280ml water"], tips: "Maat M. Gebruik harde witte broodbloem." },
-        { titel: "Volkorenbrood", programma: "Menu 7 (5u)", ingrediënten: ["1 tl gist", "400g volkorenbloem", "20g boter", "1 el suiker", "1.5 tl zout", "280ml water"], tips: "Programma duurt langer voor betere glutenontwikkeling." },
-        { titel: "Frans Brood", programma: "Menu 11 (5u 40m)", ingrediënten: ["1 tl gist", "400g bloem", "1.5 tl zout", "290ml water"], tips: "Mager deeg, knapperige korst." },
-        { titel: "Pizzadeeg", programma: "Menu 23/24 (45m)", ingrediënten: ["1 tl gist", "450g bloem", "4 el olie", "2 tl zout", "240ml water"], tips: "Alleen deeg maken, daarna in de oven bakken." },
-        { titel: "Brioche", programma: "Menu 10", ingrediënten: ["1.25 tl gist", "400g bloem", "50g suiker", "1.5 tl zout", "60g boter", "2 eieren + water (270ml)", "80g extra boter later"], tips: "Voeg extra boter toe na de piep." }
+        { titel: "Basis Wit Brood", programma: "Menu 1 (4u)", ingrediënten: ["1 tl gist", "400g bloem", "20g boter", "1 el suiker", "1.5 tl zout", "280ml water"], tips: "Gebruik harde witte broodbloem (Strong white)." },
+        { titel: "Volkorenbrood", programma: "Menu 7 (5u)", ingrediënten: ["1 tl gist", "400g volkorenbloem", "20g boter", "1 el suiker", "1.5 tl zout", "280ml water"], tips: "Het programma duurt langer om gluten goed te ontwikkelen." }
     ];
 
-    // --- FUNCTIES ---
+    // --- CORE NAVIGATIE ---
+    function wisselScherm(toonResultaat) {
+        document.getElementById('scherm-hoofd').style.display = toonResultaat ? 'none' : 'block';
+        document.getElementById('scherm-resultaat').style.display = toonResultaat ? 'block' : 'none';
+    }
 
+    function gaNaarHoofd() { wisselScherm(false); }
+
+    // --- ZUURDESEM GIDS ---
+    function toonZuurdesemMenu() {
+        wisselScherm(true);
+        document.getElementById('inhoud').innerHTML = `
+            <h3>🌿 Zuurdesem Gids</h3>
+            <p>Kies een onderwerp voor meer informatie uit je Notebook LM:</p>
+            <div class="sub-knop" onclick="toonZuurDetail('traditioneel')">1. De Traditionele 'Wild' Starter</div>
+            <div class="sub-knop" onclick="toonZuurDetail('snel')">2. De 'Snelle' Panasonic Starter</div>
+            <div class="sub-knop" onclick="toonZuurDetail('onderhoud')">3. Onderhoud & Voeding</div>
+            <div class="sub-knop" onclick="toonZuurDetail('tools')">4. Benodigdheden (Tools)</div>
+        `;
+    }
+
+    function toonZuurDetail(onderwerp) {
+        var html = '<button class="terug-knop" onclick="toonZuurdesemMenu()">⬅ Terug naar Zuurdesem Menu</button>';
+        
+        if(onderwerp === 'traditioneel') {
+            html += `<h3>Traditionele 'Wild' Starter</h3>
+            <div class="info-blok">
+                <p><strong>Basis:</strong> Bloem, water en tijd (5-14 dagen).</p>
+                <p><strong>Proces:</strong> Meng gelijke delen bloem/water. Ververs elke 12 uur (deel weggooien, vers meel/water erbij).</p>
+                <p><strong>Klaar?</strong> Als hij binnen 6-8 uur in volume verdubbeld is en bubbelt.</p>
+            </div>`;
+        } else if(onderwerp === 'snel') {
+            html += `<h3>Snelle Panasonic Starter</h3>
+            <div class="info-blok">
+                <p>Ideaal voor broodbakmachines. Gebruikt balsamicoazijn voor de zure smaak.</p>
+                <p><strong>Ingrediënten:</strong> 1 tl gist, 300g harde witte bloem, 2 el balsamico, 300ml water, 1 tl suiker.</p>
+                <p><strong>Proces:</strong> 12 uur laten rijzen onder een vochtige theedoek.</p>
+            </div>`;
+        } else if(onderwerp === 'onderhoud') {
+            html += `<h3>Onderhoud & Voeding</h3>
+            <div class="info-blok">
+                <p><strong>Veelbakkers:</strong> Op aanrecht, 2x per dag voeden.</p>
+                <p><strong>Af-en-toe:</strong> In koelkast, 1x per week voeden.</p>
+                <p><strong>Discard:</strong> Gooi het weggooi-deel niet weg! Gebruik het voor pannenkoeken of pizzadeeg.</p>
+            </div>`;
+        } else if(onderwerp === 'tools') {
+            html += `<h3>Wat heb je nodig?</h3>
+            <div class="info-blok">
+                <p><strong>1. Keukenweegschaal:</strong> Meest belangrijk voor nauwkeurigheid.</p>
+                <p><strong>2. Glazen pot:</strong> Om bubbels en rijzen goed te zien.</p>
+                <p><strong>3. Deegklopper:</strong> Ideaal voor plakkerig zuurdesemdeeg.</p>
+            </div>`;
+        }
+        document.getElementById('inhoud').innerHTML = html;
+    }
+
+    // --- OVERIGE FUNCTIES ---
     function haalSpoonacularData() {
         var term = document.getElementById('zoekveld').value || 'bread';
         wisselScherm(true);
         var inhoud = document.getElementById('inhoud');
         inhoud.innerHTML = "<p>Zoeken...</p>";
-
-        var url = "https://api.spoonacular.com/recipes/complexSearch?query=" + term + "&apiKey=" + MIJN_SLEUTEL;
-        fetch(url).then(res => res.json()).then(data => {
-            var html = "<h3>Spoonacular Resultaten</h3>";
-            data.results.forEach(r => {
-                html += '<div class="recept-kaart" onclick="toonDetails(' + r.id + ')"><img src="' + r.image + '"><b>' + r.title + '</b></div>';
+        fetch("https://api.spoonacular.com/recipes/complexSearch?query=" + term + "&apiKey=" + MIJN_SLEUTEL)
+            .then(res => res.json()).then(data => {
+                var html = "<h3>Spoonacular Resultaten</h3>";
+                data.results.forEach(r => {
+                    html += '<div class="recept-kaart" onclick="toonDetails(' + r.id + ')"><img src="' + r.image + '"><b>' + r.title + '</b></div>';
+                });
+                inhoud.innerHTML = html;
             });
-            inhoud.innerHTML = html;
-        });
     }
 
     function toonDetails(id) {
-        var url = "https://api.spoonacular.com/recipes/" + id + "/information?apiKey=" + MIJN_SLEUTEL;
-        fetch(url).then(res => res.json()).then(r => {
-            var inhoud = document.getElementById('inhoud');
-            inhoud.innerHTML = '<h2>' + r.title + '</h2><img src="' + r.image + '" style="width:100%"><p>' + r.instructions + '</p>';
-        });
+        fetch("https://api.spoonacular.com/recipes/" + id + "/information?apiKey=" + MIJN_SLEUTEL)
+            .then(res => res.json()).then(r => {
+                var inhoud = document.getElementById('inhoud');
+                inhoud.innerHTML = '<h2>' + r.title + '</h2><img src="' + r.image + '" style="width:100%"><div class="info-blok">' + r.instructions + '</div>';
+            });
     }
 
     function toonPanasonicLijst() {
@@ -91,24 +143,19 @@
         var r = panasonicRecepten[i];
         var html = '<h2>' + r.titel + '</h2><p><b>Programma:</b> ' + r.programma + '</p><ul>';
         r.ingrediënten.forEach(ing => { html += '<li>' + ing + '</li>'; });
-        html += '</ul><p><i>' + r.tips + '</i></p>';
+        html += '</ul><div class="info-blok"><i>' + r.tips + '</i></div>';
         document.getElementById('inhoud').innerHTML = '<button class="terug-knop" onclick="toonPanasonicLijst()">⬅ Terug</button>' + html;
     }
 
-    // --- TIMER CALCULATOR ---
     function toonTimerCalc() {
         wisselScherm(true);
         document.getElementById('inhoud').innerHTML = `
-            <h3>Panasonic Timer Calc</h3>
-            <p>Hoe laat is het NU?</p>
-            <input type="time" id="tijd-nu">
-            <p>Hoe laat moet het brood KLAAR zijn?</p>
-            <input type="time" id="tijd-klaar">
-            <button class="menu-knop" onclick="berekenTimer()">Bereken Instelling</button>
+            <h3>⏰ Panasonic Timer</h3>
+            <p>Hoe laat is het NU?</p><input type="time" id="tijd-nu">
+            <p>Klaar om:</p><input type="time" id="tijd-klaar">
+            <button class="menu-knop" onclick="berekenTimer()">Bereken</button>
             <div id="timer-resultaat" class="resultaat-box" style="display:none;"></div>
-            <p><small>De Panasonic timer werkt met de totale tijd tot het brood klaar is.</small></p>
         `;
-        // Zet de huidige tijd als standaard
         var nu = new Date();
         document.getElementById('tijd-nu').value = nu.getHours().toString().padStart(2, '0') + ":" + nu.getMinutes().toString().padStart(2, '0');
     }
@@ -116,33 +163,27 @@
     function berekenTimer() {
         var nu = document.getElementById('tijd-nu').value.split(':');
         var klaar = document.getElementById('tijd-klaar').value.split(':');
-        
-        var dateNu = new Date(2000, 0, 1, nu[0], nu[1]);
-        var dateKlaar = new Date(2000, 0, 1, klaar[0], klaar[1]);
-
-        if (dateKlaar <= dateNu) { dateKlaar.setDate(dateKlaar.getDate() + 1); }
-
-        var verschilMs = dateKlaar - dateNu;
-        var uren = Math.floor(verschilMs / 1000 / 60 / 60);
-        var minuten = Math.floor((verschilMs / 1000 / 60) % 60);
-
-        var resBox = document.getElementById('timer-resultaat');
-        resBox.style.display = "block";
-        resBox.innerHTML = "Stel de Panasonic timer in op:<br><strong>" + uren + ":" + minuten.toString().padStart(2, '0') + "</strong>";
+        var d1 = new Date(2000, 0, 1, nu[0], nu[1]);
+        var d2 = new Date(2000, 0, 1, klaar[0], klaar[1]);
+        if (d2 <= d1) d2.setDate(d2.getDate() + 1);
+        var diff = d2 - d1;
+        var u = Math.floor(diff / 3600000);
+        var m = Math.floor((diff % 3600000) / 60000);
+        var res = document.getElementById('timer-resultaat');
+        res.style.display = "block";
+        res.innerHTML = "Instelling: <strong>" + u + ":" + m.toString().padStart(2, '0') + "</strong>";
     }
 
     function toonInfo(type) {
         wisselScherm(true);
-        var txt = type === 'gist' ? "Gebruik water van 37 graden." : "Zuurdesem heeft tijd nodig.";
-        document.getElementById('inhoud').innerHTML = "<h3>Tips</h3><p>" + txt + "</p>";
+        var inhoud = document.getElementById('inhoud');
+        if(type === 'gist') {
+            inhoud.innerHTML = `<h3>🥐 Gist Tips</h3><div class="info-blok">
+                <p>Gebruik handwarm water (37°C). Kneed minstens 10-15 minuten voor een goede glutenstructuur.</p>
+                <p><strong>Tip:</strong> Zout mag nooit direct op de gist gestrooid worden, dit remt de werking.</p>
+            </div>`;
+        }
     }
-
-    function wisselScherm(toonResultaat) {
-        document.getElementById('scherm-hoofd').style.display = toonResultaat ? 'none' : 'block';
-        document.getElementById('scherm-resultaat').style.display = toonResultaat ? 'block' : 'none';
-    }
-
-    function gaNaarHoofd() { wisselScherm(false); }
 </script>
 </body>
 </html>
