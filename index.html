@@ -110,6 +110,32 @@ async function haalData() {
         document.getElementById('scherm-resultaat').style.display = 'none';
     }
 </script>
+    
+async function toonSpoonacularRecept(id) {
+    const inhoud = document.getElementById('inhoud');
+    inhoud.innerHTML = "<p>Recept details ophalen...</p>";
 
-</body>
+    try {
+        const res = await fetch(`https://api.spoonacular.com/recipes/${id}/information?apiKey=${SPOONACULAR_KEY}`);
+        const r = await res.json();
+
+        inhoud.innerHTML = `
+            <button class="terug-knop" onclick="haalData()">⬅ Terug naar lijst</button>
+            <div class="detail-card">
+                <img src="${r.image}" style="width:100%; border-radius:10px;">
+                <h2>${r.title}</h2>
+                <p><b>Klaar in:</b> ${r.readyInMinutes} minuten</p>
+                <hr>
+                <h4>Ingrediënten:</h4>
+                <ul>
+                    ${r.extendedIngredients.map(ing => `<li>${ing.original}</li>`).join('')}
+                </ul>
+                <h4>Instructies:</h4>
+                <div style="line-height: 1.6;">${r.instructions || "Geen instructies beschikbaar voor dit recept."}</div>
+            </div>
+        `;
+    } catch (fout) {
+        inhoud.innerHTML = "<p>Kon de details niet ophalen.</p>";
+    }
+}</body>
 </html>
