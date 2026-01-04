@@ -48,12 +48,12 @@
 
     // --- RECEPTEN DATA ---
     var panasonicRecepten = [
-        { titel: "Basis Wit Brood", programma: "Menu 1 (Basic)", ingrediënten: ["1 tl droge gist", "400 g harde witte broodbloem", "20 g boter", "1 el suiker", "1.5 tl zout", "280 mL water"], tips: "Maat M. Voor L: 500g bloem / 340ml water." },
-        { titel: "Volkorenbrood", programma: "Menu 7 (Whole Wheat)", ingrediënten: ["1 tl droge gist", "400 g harde volkorenbloem", "20 g boter", "1 el suiker", "1.5 tl zout", "280 mL water"], tips: "Programma duurt 5 uur." },
-        { titel: "Frans Brood", programma: "Menu 11 (French)", ingrediënten: ["1 tl droge gist", "400 g harde witte broodbloem", "1.5 tl zout", "290 mL water"], tips: "Knapperige korst, geen vet of suiker." },
-        { titel: "Pizzadeeg", programma: "Menu 23 of 24", ingrediënten: ["1 tl droge gist", "450 g harde witte broodbloem", "4 el olie", "2 tl zout", "240 mL water"], tips: "Alleen kneden (45 min)." },
-        { titel: "Brioche", programma: "Menu 10 (Brioche)", ingrediënten: ["1.25 tl droge gist", "400 g bloem", "50 g suiker", "60 g boter", "2 eieren + water (270ml)", "Extra 80g boter later"], tips: "Voeg extra boter toe na de piep." },
-        { titel: "Focaccia", programma: "Menu 23 of 24", ingrediënten: ["0.5 tl droge gist", "300 g harde witte broodbloem", "1 el olijfolie", "1 tl zout", "170 mL water"], tips: "Bakken op 190°C na 30 min rijzen." }
+        { titel: "Basis Wit Brood", programma: "Menu 1 (Basic)", ingrediënten: ["1 tl droge gist", "400 g harde witte broodbloem", "20 g boter", "1 el suiker", "1.5 tl zout", "280 mL water"], tips: "Maat M. Voor L: 500g bloem / 340ml water. Gebruik bloem met hoog eiwitgehalte." },
+        { titel: "Volkorenbrood", programma: "Menu 7 (Whole Wheat)", ingrediënten: ["1 tl droge gist", "400 g harde volkorenbloem", "20 g boter", "1 el suiker", "1.5 tl zout", "280 mL water"], tips: "Programma duurt 5 uur. Brood is zwaarder dan wit brood." },
+        { titel: "Frans Brood", programma: "Menu 11 (French)", ingrediënten: ["1 tl droge gist", "400 g harde witte broodbloem", "1.5 tl zout", "290 mL water"], tips: "Mager deeg zonder boter/suiker. Duurt 5u 40m voor knapperige korst." },
+        { titel: "Pizzadeeg", programma: "Menu 23 of 24", ingrediënten: ["1 tl droge gist", "450 g harde witte broodbloem", "4 el olie", "2 tl zout", "240 mL water"], tips: "Duurt 45 min. Na afloop vormen en in de oven bakken." },
+        { titel: "Brioche", programma: "Menu 10 (Brioche)", ingrediënten: ["1.25 tl droge gist", "400 g bloem", "50 g suiker", "1.5 tl zout", "60 g boter", "2 eieren + water (270ml totaal)", "Extra 80g boter later"], tips: "Voeg de extra 80g boter toe na de piep (ca. 55 min)." },
+        { titel: "Focaccia", programma: "Menu 23 of 24", ingrediënten: ["0.5 tl droge gist", "300 g harde witte broodbloem", "1 el olijfolie", "1 tl zout", "170 mL water"], tips: "45 min kneden. Uitrollen op plaat, 30 min rijzen, bakken op 190°C." }
     ];
 
     // --- NAVIGATIE ---
@@ -70,7 +70,7 @@
             <h3>🥐 Gist Gids</h3>
             <div class="sub-knop" onclick="toonGistInfo('basis')">1. Wat is gist?</div>
             <div class="sub-knop" onclick="toonGistInfo('soorten')">2. De Soorten Gist</div>
-            <div class="sub-knop" onclick="toonGistInfo('omrekenen')">3. Omrekentabel</div>
+            <div class="sub-knop" onclick="toonGistInfo('omrekenen')">3. Omrekentabel (Vers vs Instant)</div>
             <div class="sub-knop" onclick="toonGistInfo('tips')">4. De 3 Gouden Tips</div>
         `;
     }
@@ -78,13 +78,44 @@
     function toonGistInfo(onderwerp) {
         var html = '<button class="terug-knop" onclick="toonGistGids()">⬅ Terug naar Gist Gids</button>';
         if(onderwerp === 'basis') {
-            html += `<h3>Wat is gist?</h3><div class="info-blok"><p>Gist is een levend micro-organisme dat suikers omzet in koolzuurgas. Dit gas zorgt voor de luchtbelletjes waardoor deeg rijst.</p></div>`;
+            html += `<h3>Wat is gist?</h3>
+            <div class="info-blok">
+                <p>Gist (bakkersgist) is een levend micro-organisme. Het zet glucose (suikers) om in koolzuurgas en alcohol. Bij het broodbakken zorgt vooral het koolzuurgas voor luchtbelletjes, waardoor het deeg rijst en luchtig wordt.</p>
+                <p>Gist is cruciaal voor de textuur en smaak van veel broodsoorten. Zonder gist zou je een plat en compact brood krijgen.</p>
+            </div>
+            `;
         } else if(onderwerp === 'soorten') {
-            html += `<h3>Soorten Gist</h3><div class="info-blok"><p><strong>Instant gist:</strong> Direct bij de bloem voegen. Lange houdbaarheid.<br><br><strong>Verse gist:</strong> Blokjes uit de koeling. Eerst oplossen in lauw water.</p></div>`;
+            html += `<h3>De Soorten Gist</h3>
+            <div class="info-blok">
+                <h4>Instant Gist (Gedroogde gist)</h4>
+                <p><strong>Wat is het:</strong> Fijne korrels, meestal verkocht in zakjes van 7 gram. Dit is de standaard voor thuisbakkers.</p>
+                <p><strong>Gebruik:</strong> Je hoeft dit niet op te lossen in water. Je kunt het direct bij de bloem en andere ingrediënten voegen.</p>
+                <p><strong>Houdbaarheid:</strong> Ongeopend jarenlang houdbaar. Een geopend zakje blijft luchtdicht afgesloten nog 2 tot 3 maanden goed.</p>
+                
+                <h4>Verse Gist</h4>
+                <p><strong>Wat is het:</strong> Blokjes samengeperste gistcellen, lijkt qua structuur op zachte kaas. Vaak gebruikt door professionele bakkers.</p>
+                <p><strong>Gebruik:</strong> Traditioneel los je dit eerst op in lauwwarm vocht tot een papje, hoewel verbrokkelen in goed gekneed deeg ook kan werken.</p>
+                <p><strong>Houdbaarheid:</strong> Beperkt houdbaar, moet in de koelkast bewaard worden.</p>
+            </div>
+            `;
         } else if(onderwerp === 'omrekenen') {
-            html += `<h3>Omrekenen (Factor 3)</h3><div class="info-blok" style="text-align:center;"><p>Instant naar Vers: <strong>x 3</strong><br>Vers naar Instant: <strong>/ 3</strong></p></div>`;
+            html += `<h3>Omrekentabel: Vers vs. Instant</h3>
+            <div class="info-blok" style="text-align:center;">
+                <p>Wil je een recept omrekenen? Gebruik de factor <strong>3</strong>.</p>
+                <h4>Van Instant naar Vers: Vermenigvuldig met 3.</h4>
+                <p>Voorbeeld: 7 gram instant gist = 21 gram verse gist.</p>
+                <h4>Van Vers naar Instant: Deel door 3.</h4>
+                <p>Voorbeeld: 30 gram verse gist = 10 gram instant gist.</p>
+            </div>
+            `;
         } else if(onderwerp === 'tips') {
-            html += `<h3>3 Gouden Tips</h3><div class="info-blok"><ul><li>Geen direct contact tussen zout en gist.</li><li>Gebruik lauwwarm water (max 37°C).</li><li>Kneed lang genoeg voor een sterk glutennetwerk.</li></ul></div>`;
+            html += `<h3>3 Gouden Tips voor Gist</h3>
+            <div class="info-blok">
+                <p><strong>1. Pas op met zout:</strong> Zout en gist zijn geen goede vrienden. Direct contact kan de werking van gist verminderen of de gistcellen doden. Meng zout liever door de bloem of voeg het later toe, gooi het nooit direct bovenop de gist.</p>
+                <p><strong>2. Let op de temperatuur:</strong> Gist houdt van warmte, maar hitte is dodelijk. Zorg dat vloeistoffen (water/melk) lauwwarm zijn. Te heet water doodt de gist. Koude vertraagt de werking juist (handig als je deeg een nachtje in de koelkast wilt laten rijzen voor meer smaak).</p>
+                <p><strong>3. Kneden is key:</strong> Gist produceert gas, maar je deeg moet dat gas wel kunnen vasthouden. Door goed en lang genoeg te kneden ontwikkel je een glutennetwerk (stevige muren) die de luchtbelletjes gevangen houden.</p>
+            </div>
+            `;
         }
         document.getElementById('inhoud').innerHTML = html;
     }
@@ -94,23 +125,64 @@
         wisselScherm(true);
         document.getElementById('inhoud').innerHTML = `
             <h3>🌿 Zuurdesem Gids</h3>
-            <div class="sub-knop" onclick="toonZuurDetail('traditioneel')">1. Wild Starter</div>
-            <div class="sub-knop" onclick="toonZuurDetail('snel')">2. Snelle Starter</div>
-            <div class="sub-knop" onclick="toonZuurDetail('onderhoud')">3. Onderhoud</div>
-            <div class="sub-knop" onclick="toonZuurDetail('tools')">4. Benodigdheden</div>
+            <div class="sub-knop" onclick="toonZuurDetail('traditioneel')">1. De Traditionele 'Wild' Starter</div>
+            <div class="sub-knop" onclick="toonZuurDetail('snel')">2. De 'Snelle' Panasonic Starter</div>
+            <div class="sub-knop" onclick="toonZuurDetail('onderhoud')">3. Onderhoud & Voeding</div>
+            <div class="sub-knop" onclick="toonZuurDetail('tools')">4. Benodigdheden (Tools)</div>
         `;
     }
 
     function toonZuurDetail(onderwerp) {
         var html = '<button class="terug-knop" onclick="toonZuurdesemMenu()">⬅ Terug naar Gids</button>';
         if(onderwerp === 'traditioneel') {
-            html += `<h3>Wild Starter</h3><div class="info-blok"><p>Basis: Bloem, water en tijd. Ververs elke 12u. Klaar als het volume verdubbelt binnen 6-8u.</p></div>`;
+            html += `<h3>1. De Traditionele 'Wild' Starter</h3>
+            <div class="info-blok">
+                <p>Dit is de methode voor puristen die een starter vanaf nul willen opbouwen met alleen natuurlijke fermentatie.</p>
+                <p><strong>Basisprincipe:</strong> Je hebt slechts drie dingen nodig: bloem, water en tijd.</p>
+                <p><strong>Het Proces:</strong><br>
+                • Meng gelijke delen bloem en water en laat het rusten op kamertemperatuur.<br>
+                • Ververs ("voed") de starter twee keer per dag (elke 12 uur). Hierbij gooi je een deel van het mengsel weg en voeg je vers water en bloem toe.</p>
+                <p><strong>Tijdsduur:</strong> Het duurt meestal 5 tot 14 dagen voordat de starter krachtig en bubbelend is.</p>
+                <p><strong>Wanneer is hij klaar?</strong> De starter is klaar voor gebruik ("rijp") als hij bubbelt en binnen 6 tot 8 uur na het voeden in volume is verdubbeld.</p>
+                <p><strong>Geduld:</strong> Als je na een paar dagen nog weinig activiteit ziet, wees dan geduldig; het hangt af van de omstandigheden in je keuken.</p>
+            </div>
+            
+`;
         } else if(onderwerp === 'snel') {
-            html += `<h3>Snelle Starter</h3><div class="info-blok"><p>300g bloem, 300ml water, 1tl gist, 2el balsamico, 1tl suiker. 12u laten staan.</p></div>`;
+            html += `<h3>2. De 'Snelle' Starter (Panasonic)</h3>
+            <div class="info-blok">
+                <p>Dit is een kortere route, ideaal voor mensen die snel resultaat willen of een broodbakmachine gebruiken. Deze methode gebruikt commerciële gist en azijn om het proces te simuleren.</p>
+                <p><strong>Ingrediënten:</strong><br>
+                • 1 tl droge gist<br>
+                • 300 g harde witte bloem (Strong white flour)<br>
+                • 2 el balsamicoazijn (voor de zure smaak)<br>
+                • 300 ml water<br>
+                • 1 tl suiker</p>
+                <p><strong>Het Proces:</strong> Meng alle ingrediënten in een glazen kom. Dek af met een vochtige theedoek en zet vast met een elastiek. Laat minstens 12 uur rijzen op kamertemperatuur.</p>
+                <p><strong>Opbrengst:</strong> Dit recept levert genoeg starter op voor twee of drie broden. Bewaar wat over is in de koelkast.</p>
+            </div>
+            `;
         } else if(onderwerp === 'onderhoud') {
-            html += `<h3>Onderhoud</h3><div class="info-blok"><p>Aanrecht: 2x per dag voeden. Koelkast: 1x per week. Gebruik discard voor andere recepten.</p></div>`;
+            html += `<h3>3. Onderhoud & Voeding</h3>
+            <div class="info-blok">
+                <p>Eenmaal actief, moet de starter in leven worden gehouden.</p>
+                <p><strong>Schema voor veelbakkers:</strong> Bewaar de starter op het aanrecht en voed hem twee keer per dag (elke 12 uur).</p>
+                <p><strong>Schema voor af-en-toe bakkers:</strong> Bewaar de starter in de koelkast en voed hem één keer per week. Haal hem een dag of twee voor het bakken uit de koeling en voed hem een paar keer op kamertemperatuur om hem weer actief te maken.</p>
+                <p><strong>Het "Discard" (Weggooi) principe:</strong> Bij het voeden moet je een deel van de starter verwijderen, anders blijft de hoeveelheid oneindig groeien. Dit verwijderde deel heet "discard".</p>
+                <p><strong>Tip voor de app:</strong> Gooi de "discard" niet weg! Je kunt dit gebruiken in recepten voor pannenkoeken, pizzadeeg, bananenbrood of koekjes.</p>
+            </div>
+            
+`;
         } else if(onderwerp === 'tools') {
-            html += `<h3>Benodigdheden</h3><div class="info-blok"><p>Weegschaal, glazen pot, deegklopper en spatel.</p></div>`;
+            html += `<h3>4. Benodigdheden (Tools)</h3>
+            <div class="info-blok">
+                <p><strong>Keukenweegschaal:</strong> Dit is het belangrijkste hulpmiddel. Het maakt het voeden en bakken nauwkeuriger en minder rommelig.</p>
+                <p><strong>Glazen pot (Crock):</strong> Een pot met doorzichtige wanden is handig zodat je de activiteit (bubbbels) goed kunt zien. Markeringen op de zijkant helpen om te zien hoeveel de starter is gerezen.</p>
+                <p><strong>Deegklopper (Dough Whisk):</strong> Door de unieke vorm is dit ideaal om starter en brooddeeg te roeren.</p>
+                <p><strong>Spatel/Schraper:</strong> Onmisbaar om plakkerig deeg uit de kom te halen en je werkblad schoon te maken.</p>
+            </div>
+            
+`;
         }
         document.getElementById('inhoud').innerHTML = html;
     }
@@ -118,7 +190,7 @@
     // --- PANASONIC RECEPTEN ---
     function toonPanasonicLijst() {
         wisselScherm(true);
-        var html = "<h3>Panasonic Menu</h3>";
+        var html = "<h3>Panasonic Recepten</h3>";
         panasonicRecepten.forEach((r, i) => {
             html += '<div class="recept-kaart" onclick="toonPanaDetail(' + i + ')"><b>' + r.titel + '</b><br><small>' + r.programma + '</small></div>';
         });
@@ -130,7 +202,7 @@
         var html = '<h2>' + r.titel + '</h2><p><b>' + r.programma + '</b></p><ul>';
         r.ingrediënten.forEach(ing => { html += '<li>' + ing + '</li>'; });
         html += '</ul><div class="info-blok"><strong>Tip:</strong> ' + r.tips + '</div>';
-        document.getElementById('inhoud').innerHTML = '<button class="terug-knop" onclick="toonPanasonicLijst()">⬅ Terug</button>' + html;
+        document.getElementById('inhoud').innerHTML = '<button class="terug-knop" onclick="toonPanasonicLijst()">⬅ Terug naar Lijst</button>' + html;
     }
 
     // --- TIMER CALCULATOR ---
@@ -140,7 +212,7 @@
             <h3>⏰ Timer Calculator</h3>
             <p>Tijd NU:</p><input type="time" id="tijd-nu">
             <p>Klaar OM:</p><input type="time" id="tijd-klaar">
-            <button class="menu-knop" onclick="berekenTimer()">Bereken</button>
+            <button class="menu-knop" onclick="berekenTimer()">Bereken Instelling</button>
             <div id="timer-resultaat" class="resultaat-box" style="display:none;"></div>
         `;
         var nu = new Date();
@@ -157,7 +229,7 @@
         var u = Math.floor(diff / 3600000);
         var m = Math.floor((diff % 3600000) / 60000);
         document.getElementById('timer-resultaat').style.display = "block";
-        document.getElementById('timer-resultaat').innerHTML = "Stel in op: <strong>" + u + ":" + m.toString().padStart(2, '0') + "</strong>";
+        document.getElementById('timer-resultaat').innerHTML = "Stel machine in op: <strong>" + u + ":" + m.toString().padStart(2, '0') + "</strong>";
     }
 
     // --- SPOONACULAR ---
