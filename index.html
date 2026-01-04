@@ -26,6 +26,7 @@
         <p>Zoek naar broodrecepten:</p>
         <input type="text" id="zoekveld" placeholder="Bijv. Sourdough of Baguette">
         <div class="menu-knop" onclick="startZoeken()">🌍 Zoek in Spoonacular</div>
+        <div class="menu-knop" onclick="toonPanasonicLijst()">🍞 Panasonic Recepten</div>       
         <div class="menu-knop" onclick="toonInfo('gist')">🥐 Gist Tips</div>
         <div class="menu-knop" onclick="toonInfo('zuur')">🥖 Zuurdesem Tips</div>
     </div>
@@ -117,7 +118,79 @@
         document.getElementById('scherm-hoofd').style.display = 'block';
         document.getElementById('scherm-resultaat').style.display = 'none';
     }
-</script>
+
+    var panasonicRecepten = [
+    {
+        titel: "Basis Wit Brood (Basic White)",
+        programma: "Menu 1 (Basic)",
+        ingrediënten: ["1 tl droge gist", "400 g harde witte broodbloem", "20 g boter", "1 el suiker", "1.5 tl zout", "280 mL water"],
+        tips: "Dit recept is voor maat 'M'. Voor een groter brood (L) gebruikt u 500g bloem en 340mL water. Gebruik voor het beste resultaat harde bloem met een hoog eiwitgehalte."
+    },
+    {
+        titel: "Volkorenbrood (Whole Wheat)",
+        programma: "Menu 7 (Whole Wheat)",
+        ingrediënten: ["1 tl droge gist", "400 g harde volkorenbloem", "20 g boter", "1 el suiker", "1.5 tl zout", "280 mL water"],
+        tips: "Volkorenbrood rijst doorgaans minder hoog en is zwaarder dan wit brood. Dit programma duurt langer (5 uur) om de gluten goed te ontwikkelen."
+    },
+    {
+        titel: "Frans Brood (French)",
+        programma: "Menu 11 (French)",
+        ingrediënten: ["1 tl droge gist", "400 g harde witte broodbloem", "1.5 tl zout", "290 mL water"],
+        tips: "Dit is een 'mager' deeg zonder boter of suiker. Het programma duurt lang (ca. 5 uur 40 min) om een knapperige korst en grove structuur te krijgen."
+    },
+    {
+        titel: "Pizzadeeg",
+        programma: "Menu 24 of 23 (Pizza)",
+        ingrediënten: ["1 tl droge gist", "450 g harde witte broodbloem", "4 el olie", "2 tl zout", "240 mL water"],
+        tips: "Dit programma duurt slechts 45 minuten en maakt alleen het deeg. Na het programma uit de machine halen en in de oven bakken."
+    },
+    {
+        titel: "Brioche (Basic Brioche)",
+        programma: "Menu 10 (Brioche)",
+        ingrediënten: ["1.25 tl droge gist", "400 g harde witte broodbloem", "50 g suiker", "2 el melkpoeder", "1.5 tl zout", "60 g boter (blokjes)", "2 eieren + 2 dooiers + water = 270 mL", "Extra: 80 g boter (later toevoegen)"],
+        tips: "De extra 80g boter wordt pas later toegevoegd (na ca. 55 min) wanneer de machine piept."
+    },
+    {
+        titel: "Focaccia",
+        programma: "Menu 24 of 23 (Pizza)",
+        ingrediënten: ["0.5 tl droge gist", "300 g harde witte broodbloem", "1 el olijfolie", "1 tl zout", "170 mL water"],
+        tips: "De machine kneedt alleen het deeg (45 min). Daarna uitrollen op bakplaat en in de oven op 190°C bakken."
+    }
+];
+
+function toonPanasonicLijst() {
+    var inhoud = document.getElementById('inhoud');
+    document.getElementById('scherm-hoofd').style.display = 'none';
+    document.getElementById('scherm-resultaat').style.display = 'block';
+    
+    var html = "<h3>Panasonic Recepten</h3>";
+    for (var i = 0; i < panasonicRecepten.length; i++) {
+        html += '<div class="recept-kaart" onclick="toonPanasonicDetail(' + i + ')">' +
+                '<b>' + panasonicRecepten[i].titel + '</b><br><small>' + panasonicRecepten[i].programma + '</small>' +
+                '</div>';
+    }
+    inhoud.innerHTML = html;
+}
+
+function toonPanasonicDetail(index) {
+    var r = panasonicRecepten[index];
+    var inhoud = document.getElementById('inhoud');
+    
+    var ingredHtml = "<ul>";
+    for(var j=0; j < r.ingrediënten.length; j++) {
+        ingredHtml += "<li>" + r.ingrediënten[j] + "</li>";
+    }
+    ingredHtml += "</ul>";
+
+    inhoud.innerHTML = '<button class="terug-knop" onclick="toonPanasonicLijst()">⬅ Terug naar lijst</button>' +
+        '<div class="detail-card">' +
+        '<h2>' + r.titel + '</h2>' +
+        '<p><b>Programma:</b> ' + r.programma + '</p><hr>' +
+        '<h4>Ingrediënten:</h4>' + ingredHtml +
+        '<h4>Bakkers Tips:</h4>' +
+        '<p><i>' + r.tips + '</i></p>' +
+        '</div>';
+}</script>
 
 </body>
 </html>
