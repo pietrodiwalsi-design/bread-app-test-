@@ -13,7 +13,6 @@
         .recept-kaart { background: #fff; border: 1px solid #eee; padding: 15px; margin-top: 10px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; }
         .recept-kaart img { width: 60px; height: 60px; border-radius: 8px; margin-right: 15px; object-fit: cover; }
         .terug-knop { background: #5d4037; color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; margin-bottom: 15px; cursor: pointer; font-size: 16px; }
-        .detail-card img { width: 100%; border-radius: 15px; margin-bottom: 15px; }
     </style>
 </head>
 <body>
@@ -26,7 +25,7 @@
     <div id="scherm-hoofd">
         <p>Zoek naar broodrecepten:</p>
         <input type="text" id="zoekveld" placeholder="Bijv. Sourdough of Baguette">
-        <div class="menu-knop" onclick="haalSpoonacularData()">🌍 Zoek in Spoonacular</div>
+        <div class="menu-knop" onclick="startZoeken()">🌍 Zoek in Spoonacular</div>
         <div class="menu-knop" onclick="toonInfo('gist')">🥐 Gist Tips</div>
         <div class="menu-knop" onclick="toonInfo('zuur')">🥖 Zuurdesem Tips</div>
     </div>
@@ -38,82 +37,75 @@
 </div>
 
 <script>
-    // Gebruik je eigen sleutel hier
-    const MIJN_SLEUTEL = "2386c821382b4094a3045c9c6ffd588d"; 
-    let lijstMetRecepten = [];
+    // Jouw werkende sleutel
+    var MIJN_SLEUTEL = "2386c821382b4094a3045c9c6ffd588d"; 
+    var opgeslagenLijst = [];
 
-    async function haalSpoonacularData() {
-        const zoekveld = document.getElementById('zoekveld');
-        const term = zoekveld.value || 'bread';
-        const inhoud = document.getElementById('inhoud');
+    function startZoeken() {
+        var term = document.getElementById('zoekveld').value || 'bread';
+        var inhoud = document.getElementById('inhoud');
         
         document.getElementById('scherm-hoofd').style.display = 'none';
         document.getElementById('scherm-resultaat').style.display = 'block';
         inhoud.innerHTML = "<p>Bezig met laden...</p>";
 
-        const url = "https://api.spoonacular.com/recipes/complexSearch?query=" + term + "&apiKey=" + MIJN_SLEUTEL;
+        var url = "https://api.spoonacular.com/recipes/complexSearch?query=" + term + "&apiKey=" + MIJN_SLEUTEL;
 
-        try {
-            const response = await fetch(url);
-            const data = await response.json();
-            
-            if (data.results && data.results.length > 0) {
-                lijstMetRecepten = data.results;
-                inhoud.innerHTML = "<h3>Resultaten voor " + term + ":</h3>";
-                
-                data.results.forEach((recept, index) => {
-                    inhoud.innerHTML += `
-                        <div class="recept-kaart" onclick="toonDetails(${recept.id})">
-                            <img src="${recept.image}" alt="foto">
-                            <div><b>${recept.title}</b><br><small>Klik voor recept</small></div>
-                        </div>`;
-                });
-            } else {
-                inhoud.innerHTML = "<p>Geen resultaten gevonden.</p>";
-            }
-        } catch (fout) {
-            inhoud.innerHTML = "<p>Er is iets misgegaan met de verbinding.</p>";
-        }
+        fetch(url)
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                if (data.results && data.results.length > 0) {
+                    opgeslagenLijst = data.results;
+                    var html = "<h3>Resultaten voor " + term + ":</h3>";
+                    
+                    for (var i = 0; i < data.results.length; i++) {
+                        var r = data.results[i];
+                        html += '<div class="recept-kaart" onclick="toonDetails(' + r.id + ')">' +
+                                '<img src="' + r.image + '">' +
+                                '<div><b>' + r.title + '</b><br><small>Klik voor recept</small></div>' +
+                                '</div>';
+                    }
+                    inhoud.innerHTML = html;
+                } else {
+                    inhoud.innerHTML = "<p>Niets gevonden.</p>";
+                }
+            })
+            .catch(function(err) {
+                inhoud.innerHTML = "<p>Fout bij verbinden.</p>";
+            });
     }
 
-    async function toonDetails(id) {
-        const inhoud = document.getElementById('inhoud');
+    function toonDetails(id) {
+        var inhoud = document.getElementById('inhoud');
         inhoud.innerHTML = "<p>Recept ophalen...</p>";
 
-        const detailUrl = "https://api.spoonacular.com/recipes/" + id + "/information?apiKey=" + MIJN_SLEUTEL;
+        var detailUrl = "https://api.spoonacular.com/recipes/" + id + "/information?apiKey=" + MIJN_SLEUTEL;
 
-        try {
-            const response = await fetch(detailUrl);
-            const r = await response.json();
+        fetch(detailUrl)
+            .then(function(res) { return res.json(); })
+            .then(function(r) {
+                var ingredHTML = "<ul>";
+                for (var j = 0; j < r.extendedIngredients.length; j++) {
+                    ingredHTML += "<li>" + r.extendedIngredients[j].original + "</li>";
+                }
+                ingredHTML += "</ul>";
 
-            // We bouwen de ingrediëntenlijst op
-            let ingrediëntenHtml = "<ul>";
-            r.extendedIngredients.forEach(ing => {
-                ingrediëntenHtml += "<li>" + ing.original + "</li>";
+                inhoud.innerHTML = '<button class="terug-knop" onclick="startZoeken()">⬅ Terug naar lijst</button>' +
+                    '<div>' +
+                    '<img src="' + r.image + '" style="width:100%; border-radius:15px;">' +
+                    '<h2>' + r.title + '</h2>' +
+                    '<p><b>Tijd:</b> ' + r.readyInMinutes + ' minuten</p><hr>' +
+                    '<h4>Ingrediënten:</h4>' + ingredHTML +
+                    '<h4>Instructies:</h4>' +
+                    '<p>' + (r.instructions || "Geen instructies beschikbaar.") + '</p>' +
+                    '</div>';
             });
-            ingrediëntenHtml += "</ul>";
-
-            inhoud.innerHTML = `
-                <button class="terug-knop" onclick="gaTerugNaarLijst()">⬅ Terug naar lijst</button>
-                <div class="detail-card">
-                    <img src="${r.image}">
-                    <h2>${r.title}</h2>
-                    <p><b>Tijd:</b> ${r.readyInMinutes} minuten</p>
-                    <hr>
-                    <h4>Ingrediënten:</h4>
-                    ${ingrediëntenHtml}
-                    <h4>Instructies:</h4>
-                    <p>${r.instructions || "Geen instructies beschikbaar."}</p>
-                </div>`;
-        } catch (fout) {
-            inhoud.innerHTML = "<p>Fout bij laden receptgegevens.</p>";
-        }
     }
 
     function toonInfo(type) {
         document.getElementById('scherm-hoofd').style.display = 'none';
         document.getElementById('scherm-resultaat').style.display = 'block';
-        const inhoud = document.getElementById('inhoud');
+        var inhoud = document.getElementById('inhoud');
         if(type === 'gist') {
             inhoud.innerHTML = "<h3>Gist Tips</h3><p>Gebruik handwarm water. Kneed minstens 10 minuten.</p>";
         } else {
@@ -124,19 +116,6 @@
     function gaNaarHoofd() {
         document.getElementById('scherm-hoofd').style.display = 'block';
         document.getElementById('scherm-resultaat').style.display = 'none';
-    }
-
-    function gaTerugNaarLijst() {
-        // Deze functie zorgt dat we niet opnieuw hoeven te zoeken als we teruggaan
-        const inhoud = document.getElementById('inhoud');
-        inhoud.innerHTML = "<h3>Resultaten:</h3>";
-        lijstMetRecepten.forEach((recept) => {
-            inhoud.innerHTML += `
-                <div class="recept-kaart" onclick="toonDetails(${recept.id})">
-                    <img src="${recept.image}" alt="foto">
-                    <div><b>${recept.title}</b><br><small>Klik voor recept</small></div>
-                </div>`;
-        });
     }
 </script>
 
