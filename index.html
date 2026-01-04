@@ -45,28 +45,47 @@ async function haalData() {
     document.getElementById('scherm-hoofd').style.display = 'none';
     document.getElementById('scherm-resultaat').style.display = 'block';
     
-    inhoud.innerHTML = "<p>Bezig met doorzoeken van professionele databases...</p>";
+    inhoud.innerHTML = "<p>Bezig met zoeken in Spoonacular...</p>";
+
+    // DE CORRECTE URL (Zonder /api/json/v1/)
+    const url = `https://api.spoonacular.com/recipes/complexSearch?query=${zoekterm}&apiKey=${SPOONACULAR_KEY}`;
 
     try {
-        // We roepen de Spoonacular API aan voor recepten
-        const url = `https://api.spoonacular.com/api/json/v1/recipes/complexSearch?query=${zoekterm}&apiKey=${SPOONACULAR_KEY}`;
-        
         const response = await fetch(url);
+        
+        if (!response.ok) {
+            throw new Error(`Server fout: ${response.status}`);
+        }
+
         const data = await response.json();
         
-        receptenLijst = []; // Reset de lijst
+        receptenLijst = []; 
         inhoud.innerHTML = `<h3>Resultaten voor "${zoekterm}":</h3>`;
 
         if (data.results && data.results.length > 0) {
-            // Spoonacular slaat data op in 'results'
             data.results.forEach((recept) => {
-                // We voegen elk resultaat toe aan onze lijst
                 receptenLijst.push({
                     strMeal: recept.title,
                     strMealThumb: recept.image,
-                    id: recept.id // We slaan het ID op om later details op te halen
+                    id: recept.id 
                 });
             });
+
+            receptenLijst.forEach((r) => {
+                inhoud.innerHTML += `
+                    <div class="recept-kaart" onclick="toonSpoonacularRecept(${r.id})" style="border: 1px solid #ddd; padding: 10px; margin-bottom: 5px; border-radius: 8px; cursor: pointer;">
+                        <span style="font-size: 0.7em; background: #e8f5e9; padding: 2px 5px; border-radius: 3px;">SPOONACULAR</span><br>
+                        <b>${r.strMeal}</b>
+                    </div>`;
+            });
+        } else {
+            inhoud.innerHTML = "<p>Geen resultaten gevonden. Probeer een Engelse term.</p>";
+        }
+    } catch (fout) {
+        inhoud.innerHTML = `<p style="color:red;">Fout: ${fout.message}</p>
+                           <p>De URL was onjuist of de sleutel werkt niet.</p>`;
+    }
+}
 
             receptenLijst.forEach((r, i) => {
                 inhoud.innerHTML += `
