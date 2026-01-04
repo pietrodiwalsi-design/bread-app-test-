@@ -37,44 +37,49 @@
 <script>
     let receptenLijst = [];
 
-    async function haalData() {
+const SPOONACULAR_KEY = "2386c821382b4094a3045c9c6ffd588d";
+
+async function haalData() {
     const zoekterm = document.getElementById('zoekveld').value || 'bread';
     const inhoud = document.getElementById('inhoud');
     document.getElementById('scherm-hoofd').style.display = 'none';
     document.getElementById('scherm-resultaat').style.display = 'block';
     
-    inhoud.innerHTML = "<p>Bezig met doorzoeken van meerdere databases...</p>";
+    inhoud.innerHTML = "<p>Bezig met doorzoeken van professionele databases...</p>";
 
-    // Hier kunnen we in de toekomst meerdere 'fetch' verzoeken tegelijk doen
     try {
-        const url1 = `https://www.themealdb.com/api/json/v1/1/search.php?s=${zoekterm}`;
+        // We roepen de Spoonacular API aan voor recepten
+        const url = `https://api.spoonacular.com/api/json/v1/recipes/complexSearch?query=${zoekterm}&apiKey=${SPOONACULAR_KEY}`;
         
-        const [res1] = await Promise.all([
-            fetch(url1)
-        ]);
-
-        const data1 = await res1.json();
+        const response = await fetch(url);
+        const data = await response.json();
         
-        // We combineren de resultaten
-        let alleResultaten = [];
-        if (data1.meals) alleResultaten = [...data1.meals];
+        receptenLijst = []; // Reset de lijst
+        inhoud.innerHTML = `<h3>Resultaten voor "${zoekterm}":</h3>`;
 
-        if (alleResultaten.length > 0) {
-            receptenLijst = alleResultaten;
-            inhoud.innerHTML = `<h3>${alleResultaten.length} recepten gevonden:</h3>`;
-            alleResultaten.forEach((recept, i) => {
-                // We voegen een label toe om te zien waar het recept vandaan komt
+        if (data.results && data.results.length > 0) {
+            // Spoonacular slaat data op in 'results'
+            data.results.forEach((recept) => {
+                // We voegen elk resultaat toe aan onze lijst
+                receptenLijst.push({
+                    strMeal: recept.title,
+                    strMealThumb: recept.image,
+                    id: recept.id // We slaan het ID op om later details op te halen
+                });
+            });
+
+            receptenLijst.forEach((r, i) => {
                 inhoud.innerHTML += `
-                    <div class="recept-kaart" onclick="toonRecept(${i})">
-                        <span style="font-size: 0.7em; background: #d7ccc8; padding: 2px 5px; border-radius: 3px;">BRON: MEALDB</span><br>
-                        <b>${recept.strMeal}</b>
+                    <div class="recept-kaart" onclick="toonSpoonacularRecept(${r.id})">
+                        <span style="font-size: 0.7em; background: #e8f5e9; padding: 2px 5px; border-radius: 3px;">BRON: SPOONACULAR</span><br>
+                        <b>${r.strMeal}</b>
                     </div>`;
             });
         } else {
-            inhoud.innerHTML = "<p>Geen resultaten gevonden. Probeer een andere term.</p>";
+            inhoud.innerHTML = "<p>Geen resultaten gevonden bij Spoonacular.</p>";
         }
     } catch (fout) {
-        inhoud.innerHTML = "<p>Fout bij ophalen van data. Controleer je verbinding.</p>";
+        inhoud.innerHTML = "<p>Fout bij verbinden met de API. Controleer je sleutel.</p>";
     }
 }
     function toonRecept(index) {
