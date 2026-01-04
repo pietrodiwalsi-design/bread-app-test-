@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brood Partner</title>
+    <title>Brood Partner Pro</title>
     <style>
-        body { font-family: sans-serif; background-color: #fdf5e6; color: #4e342e; margin: 0; padding: 15px; }
-        .app { max-width: 500px; margin: auto; background: white; min-height: 90vh; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        header { text-align: center; border-bottom: 2px solid #8d6e63; margin-bottom: 20px; padding-bottom: 10px; }
-        .menu-item { background: #8d6e63; color: white; padding: 15px; margin: 10px 0; border-radius: 10px; cursor: pointer; text-align: center; font-weight: bold; }
-        input { width: 100%; padding: 12px; border-radius: 20px; border: 1px solid #ccc; box-sizing: border-box; margin-bottom: 10px; }
-        .recept-kaart { background: #fff; border: 1px solid #ddd; padding: 10px; margin-top: 10px; border-radius: 8px; cursor: pointer; }
-        .terug-knop { background: #5d4037; color: white; border: none; padding: 10px; width: 100%; border-radius: 5px; margin-bottom: 15px; cursor: pointer; }
+        body { font-family: sans-serif; background-color: #fdf5e6; color: #4e342e; padding: 15px; margin: 0; }
+        .app { max-width: 500px; margin: auto; background: white; min-height: 90vh; padding: 20px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        header { text-align: center; border-bottom: 2px solid #8d6e63; margin-bottom: 20px; }
+        .menu-knop { background: #8d6e63; color: white; padding: 15px; margin: 10px 0; border-radius: 12px; cursor: pointer; text-align: center; font-weight: bold; }
+        input { width: 100%; padding: 12px; border-radius: 25px; border: 1px solid #ccc; box-sizing: border-box; margin-bottom: 10px; font-size: 16px; }
+        .recept-kaart { background: #fff; border: 1px solid #eee; padding: 15px; margin-top: 10px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; }
+        .recept-kaart img { width: 60px; height: 60px; border-radius: 8px; margin-right: 15px; object-fit: cover; }
+        .terug-knop { background: #5d4037; color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; margin-bottom: 15px; cursor: pointer; font-size: 16px; }
+        .detail-card img { width: 100%; border-radius: 15px; margin-bottom: 15px; }
     </style>
 </head>
 <body>
@@ -22,10 +24,11 @@
     </header>
 
     <div id="scherm-hoofd">
-        <input type="text" id="zoekveld" placeholder="Zoek op 'bread' of 'rye'...">
-        <div class="menu-item" onclick="haalData()">🌍 Zoek in Publieke Database</div>
-        <div class="menu-item" onclick="toonInfo('gist')">🥐 Gist Tips</div>
-        <div class="menu-item" onclick="toonInfo('zuur')">🥖 Zuurdesem Tips</div>
+        <p>Zoek naar broodrecepten:</p>
+        <input type="text" id="zoekveld" placeholder="Bijv. Sourdough of Baguette">
+        <div class="menu-knop" onclick="haalSpoonacularData()">🌍 Zoek in Spoonacular</div>
+        <div class="menu-knop" onclick="toonInfo('gist')">🥐 Gist Tips</div>
+        <div class="menu-knop" onclick="toonInfo('zuur')">🥖 Zuurdesem Tips</div>
     </div>
 
     <div id="scherm-resultaat" style="display:none;">
@@ -35,82 +38,76 @@
 </div>
 
 <script>
-    let receptenLijst = [];
+    // Gebruik je eigen sleutel hier
+    const MIJN_SLEUTEL = "2386c821382b4094a3045c9c6ffd588d"; 
+    let lijstMetRecepten = [];
 
-const SPOONACULAR_KEY = "2386c821382b4094a3045c9c6ffd588d";
-
-async function haalData() {
-    const zoekterm = document.getElementById('zoekveld').value || 'bread';
-    const inhoud = document.getElementById('inhoud');
-    document.getElementById('scherm-hoofd').style.display = 'none';
-    document.getElementById('scherm-resultaat').style.display = 'block';
-    
-    inhoud.innerHTML = "<p>Bezig met zoeken in Spoonacular...</p>";
-
-    // DE CORRECTE URL (Zonder /api/json/v1/)
-    const url = `https://api.spoonacular.com/recipes/complexSearch?query=${zoekterm}&apiKey=${SPOONACULAR_KEY}`;
-
-    try {
-        const response = await fetch(url);
-        
-        if (!response.ok) {
-            throw new Error(`Server fout: ${response.status}`);
-        }
-
-        const data = await response.json();
-        
-        receptenLijst = []; 
-        inhoud.innerHTML = `<h3>Resultaten voor "${zoekterm}":</h3>`;
-
-        if (data.results && data.results.length > 0) {
-            data.results.forEach((recept) => {
-                receptenLijst.push({
-                    strMeal: recept.title,
-                    strMealThumb: recept.image,
-                    id: recept.id 
-                });
-            });
-
-            receptenLijst.forEach((r) => {
-                inhoud.innerHTML += `
-                    <div class="recept-kaart" onclick="toonSpoonacularRecept(${r.id})" style="border: 1px solid #ddd; padding: 10px; margin-bottom: 5px; border-radius: 8px; cursor: pointer;">
-                        <span style="font-size: 0.7em; background: #e8f5e9; padding: 2px 5px; border-radius: 3px;">SPOONACULAR</span><br>
-                        <b>${r.strMeal}</b>
-                    </div>`;
-            });
-        } else {
-            inhoud.innerHTML = "<p>Geen resultaten gevonden. Probeer een Engelse term.</p>";
-        }
-    } catch (fout) {
-        inhoud.innerHTML = `<p style="color:red;">Fout: ${fout.message}</p>
-                           <p>De URL was onjuist of de sleutel werkt niet.</p>`;
-    }
-}
-
-            receptenLijst.forEach((r, i) => {
-                inhoud.innerHTML += `
-                    <div class="recept-kaart" onclick="toonSpoonacularRecept(${r.id})">
-                        <span style="font-size: 0.7em; background: #e8f5e9; padding: 2px 5px; border-radius: 3px;">BRON: SPOONACULAR</span><br>
-                        <b>${r.strMeal}</b>
-                    </div>`;
-            });
-        } else {
-            inhoud.innerHTML = "<p>Geen resultaten gevonden bij Spoonacular.</p>";
-        }
-    } catch (fout) {
-        inhoud.innerHTML = "<p>Fout bij verbinden met de API. Controleer je sleutel.</p>";
-    }
-}
-    function toonRecept(index) {
-        const r = receptenLijst[index];
+    async function haalSpoonacularData() {
+        const zoekveld = document.getElementById('zoekveld');
+        const term = zoekveld.value || 'bread';
         const inhoud = document.getElementById('inhoud');
-        inhoud.innerHTML = `
-            <button class="terug-knop" onclick="haalData()">⬅ Terug naar lijst</button>
-            <h2>${r.strMeal}</h2>
-            <img src="${r.strMealThumb}" style="width:100%; border-radius:10px;">
-            <h4>Bereiding:</h4>
-            <p style="white-space: pre-line;">${r.strInstructions}</p>
-        `;
+        
+        document.getElementById('scherm-hoofd').style.display = 'none';
+        document.getElementById('scherm-resultaat').style.display = 'block';
+        inhoud.innerHTML = "<p>Bezig met laden...</p>";
+
+        const url = "https://api.spoonacular.com/recipes/complexSearch?query=" + term + "&apiKey=" + MIJN_SLEUTEL;
+
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            
+            if (data.results && data.results.length > 0) {
+                lijstMetRecepten = data.results;
+                inhoud.innerHTML = "<h3>Resultaten voor " + term + ":</h3>";
+                
+                data.results.forEach((recept, index) => {
+                    inhoud.innerHTML += `
+                        <div class="recept-kaart" onclick="toonDetails(${recept.id})">
+                            <img src="${recept.image}" alt="foto">
+                            <div><b>${recept.title}</b><br><small>Klik voor recept</small></div>
+                        </div>`;
+                });
+            } else {
+                inhoud.innerHTML = "<p>Geen resultaten gevonden.</p>";
+            }
+        } catch (fout) {
+            inhoud.innerHTML = "<p>Er is iets misgegaan met de verbinding.</p>";
+        }
+    }
+
+    async function toonDetails(id) {
+        const inhoud = document.getElementById('inhoud');
+        inhoud.innerHTML = "<p>Recept ophalen...</p>";
+
+        const detailUrl = "https://api.spoonacular.com/recipes/" + id + "/information?apiKey=" + MIJN_SLEUTEL;
+
+        try {
+            const response = await fetch(detailUrl);
+            const r = await response.json();
+
+            // We bouwen de ingrediëntenlijst op
+            let ingrediëntenHtml = "<ul>";
+            r.extendedIngredients.forEach(ing => {
+                ingrediëntenHtml += "<li>" + ing.original + "</li>";
+            });
+            ingrediëntenHtml += "</ul>";
+
+            inhoud.innerHTML = `
+                <button class="terug-knop" onclick="gaTerugNaarLijst()">⬅ Terug naar lijst</button>
+                <div class="detail-card">
+                    <img src="${r.image}">
+                    <h2>${r.title}</h2>
+                    <p><b>Tijd:</b> ${r.readyInMinutes} minuten</p>
+                    <hr>
+                    <h4>Ingrediënten:</h4>
+                    ${ingrediëntenHtml}
+                    <h4>Instructies:</h4>
+                    <p>${r.instructions || "Geen instructies beschikbaar."}</p>
+                </div>`;
+        } catch (fout) {
+            inhoud.innerHTML = "<p>Fout bij laden receptgegevens.</p>";
+        }
     }
 
     function toonInfo(type) {
@@ -118,9 +115,9 @@ async function haalData() {
         document.getElementById('scherm-resultaat').style.display = 'block';
         const inhoud = document.getElementById('inhoud');
         if(type === 'gist') {
-            inhoud.innerHTML = "<h3>Gist Tips</h3><p>Gebruik water van 37 graden Celsius. Te warm water doodt de gistcellen.</p>";
+            inhoud.innerHTML = "<h3>Gist Tips</h3><p>Gebruik handwarm water. Kneed minstens 10 minuten.</p>";
         } else {
-            inhoud.innerHTML = "<h3>Zuurdesem Tips</h3><p>Een starter heeft minimaal 7 dagen nodig om stabiel te worden. Bak met veel stoom in de oven.</p>";
+            inhoud.innerHTML = "<h3>Zuurdesem Tips</h3><p>Zorg voor een actieve starter. Gebruik een Dutch Oven.</p>";
         }
     }
 
@@ -128,33 +125,20 @@ async function haalData() {
         document.getElementById('scherm-hoofd').style.display = 'block';
         document.getElementById('scherm-resultaat').style.display = 'none';
     }
-</script>
-    
-async function toonSpoonacularRecept(id) {
-    const inhoud = document.getElementById('inhoud');
-    inhoud.innerHTML = "<p>Recept details ophalen...</p>";
 
-    try {
-        const res = await fetch(`https://api.spoonacular.com/recipes/${id}/information?apiKey=${SPOONACULAR_KEY}`);
-        const r = await res.json();
-
-        inhoud.innerHTML = `
-            <button class="terug-knop" onclick="haalData()">⬅ Terug naar lijst</button>
-            <div class="detail-card">
-                <img src="${r.image}" style="width:100%; border-radius:10px;">
-                <h2>${r.title}</h2>
-                <p><b>Klaar in:</b> ${r.readyInMinutes} minuten</p>
-                <hr>
-                <h4>Ingrediënten:</h4>
-                <ul>
-                    ${r.extendedIngredients.map(ing => `<li>${ing.original}</li>`).join('')}
-                </ul>
-                <h4>Instructies:</h4>
-                <div style="line-height: 1.6;">${r.instructions || "Geen instructies beschikbaar voor dit recept."}</div>
-            </div>
-        `;
-    } catch (fout) {
-        inhoud.innerHTML = "<p>Kon de details niet ophalen.</p>";
+    function gaTerugNaarLijst() {
+        // Deze functie zorgt dat we niet opnieuw hoeven te zoeken als we teruggaan
+        const inhoud = document.getElementById('inhoud');
+        inhoud.innerHTML = "<h3>Resultaten:</h3>";
+        lijstMetRecepten.forEach((recept) => {
+            inhoud.innerHTML += `
+                <div class="recept-kaart" onclick="toonDetails(${recept.id})">
+                    <img src="${recept.image}" alt="foto">
+                    <div><b>${recept.title}</b><br><small>Klik voor recept</small></div>
+                </div>`;
+        });
     }
-}</body>
+</script>
+
+</body>
 </html>
