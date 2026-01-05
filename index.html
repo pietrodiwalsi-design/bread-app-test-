@@ -49,11 +49,11 @@
     // --- RECEPTEN DATA ---
     var panasonicRecepten = [
         { titel: "Basis Wit Brood", img: "witbrood.png", programma: "Menu 1 (Basic)", ingrediënten: ["1 tl droge gist", "400 g harde witte broodbloem", "20 g boter", "1 el suiker", "1.5 tl zout", "280 mL water"], tips: "Maat M. Voor L: 500g bloem / 340ml water. Gebruik bloem met hoog eiwitgehalte." },
-        { titel: "Volkorenbrood", img: "Volkorenbrood.png", programma: "Menu 7 (Whole Wheat)", ingrediënten: ["1 tl droge gist", "400 g harde volkorenbloem", "20 g boter", "1 el suiker", "1.5 tl zout", "280 mL water"], tips: "Programma duurt 5 uur. Brood is zwaarder dan wit brood." },
+        { titel: "Volkorenbrood", img: "volkorenbrood.png", programma: "Menu 7 (Whole Wheat)", ingrediënten: ["1 tl droge gist", "400 g harde volkorenbloem", "20 g boter", "1 el suiker", "1.5 tl zout", "280 mL water"], tips: "Programma duurt 5 uur. Brood is zwaarder dan wit brood." },
         { titel: "Frans Brood", img: "frans_stokbrood.png", programma: "Menu 11 (French)", ingrediënten: ["1 tl droge gist", "400 g harde witte broodbloem", "1.5 tl zout", "290 mL water"], tips: "Mager deeg zonder boter/suiker. Duurt 5u 40m voor knapperige korst." },
-        { titel: "Pizzadeeg", img: "Pizza_deeg.png", programma: "Menu 23 of 24", ingrediënten: ["1 tl droge gist", "450 g harde witte broodbloem", "4 el olie", "2 tl zout", "240 mL water"], tips: "Duurt 45 min. Na afloop vormen en in de oven bakken." },
-        { titel: "Brioche", img: "Brioche_brood.png", programma: "Menu 10 (Brioche)", ingrediënten: ["1.25 tl droge gist", "400 g bloem", "50 g suiker", "1.5 tl zout", "60 g boter", "2 eieren + water (270ml totaal)", "Extra 80g boter later"], tips: "Voeg de extra 80g boter toe na de piep (ca. 55 min)." },
-        { titel: "Focaccia", img: "Foccacia_brood.png", programma: "Menu 23 of 24", ingrediënten: ["0.5 tl droge gist", "300 g harde witte broodbloem", "1 el olijfolie", "1 tl zout", "170 mL water"], tips: "45 min kneden. Uitrollen op plaat, 30 min rijzen, bakken op 190°C." }
+        { titel: "Pizzadeeg", img: "pizza_deeg.png", programma: "Menu 23 of 24", ingrediënten: ["1 tl droge gist", "450 g harde witte broodbloem", "4 el olie", "2 tl zout", "240 mL water"], tips: "Duurt 45 min. Na afloop vormen en in de oven bakken." },
+        { titel: "Brioche", img: "brioche_brood.png", programma: "Menu 10 (Brioche)", ingrediënten: ["1.25 tl droge gist", "400 g bloem", "50 g suiker", "1.5 tl zout", "60 g boter", "2 eieren + water (270ml totaal)", "Extra 80g boter later"], tips: "Voeg de extra 80g boter toe na de piep (ca. 55 min)." },
+        { titel: "Focaccia", img: "focaccia_brood.png", programma: "Menu 23 of 24", ingrediënten: ["0.5 tl droge gist", "300 g harde witte broodbloem", "1 el olijfolie", "1 tl zout", "170 mL water"], tips: "45 min kneden. Uitrollen op plaat, 30 min rijzen, bakken op 190°C." }
     ];
 
     function wisselScherm(toonResultaat) {
@@ -67,7 +67,7 @@
         wisselScherm(true);
         document.getElementById('inhoud').innerHTML = `
             <h3>🥐 Gist Gids</h3>
-            <img src="Gist.png" class="hoofd-img" alt="Gist Informatie">
+            <img src="gist.png" class="hoofd-img" alt="Gist Informatie">
             <div class="sub-knop" onclick="toonGistDetail('basis')">1. Wat is gist?</div>
             <div class="sub-knop" onclick="toonGistDetail('soorten')">2. De Soorten Gist</div>
             <div class="sub-knop" onclick="toonGistDetail('omrekenen')">3. Omrekentabel</div>
@@ -94,7 +94,7 @@
         wisselScherm(true);
         document.getElementById('inhoud').innerHTML = `
             <h3>🌿 Zuurdesem Gids</h3>
-            <img src="Zuurdesem.png" class="hoofd-img" alt="Zuurdesem Starter">
+            <img src="zuurdesem.png" class="hoofd-img" alt="Zuurdesem Starter">
             <div class="sub-knop" onclick="toonZuurDetail('traditioneel')">1. De Traditionele Starter</div>
             <div class="sub-knop" onclick="toonZuurDetail('snel')">2. De Snelle Starter</div>
             <div class="sub-knop" onclick="toonZuurDetail('onderhoud')">3. Onderhoud & Voeding</div>
