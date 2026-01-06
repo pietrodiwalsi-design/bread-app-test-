@@ -8,23 +8,21 @@
         body { font-family: -apple-system, sans-serif; background-color: #fdf5e6; color: #4e342e; padding: 15px; margin: 0; }
         .app { max-width: 500px; margin: auto; background: white; min-height: 95vh; padding: 20px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
         header { text-align: center; border-bottom: 2px solid #8d6e63; margin-bottom: 25px; padding-bottom: 10px; }
-        
-        /* Hoofdmenu Layout */
         .menu-rij { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; gap: 15px; border-bottom: 1px solid #f0f0f0; padding-bottom: 15px; }
         .menu-uitleg { flex: 1.2; font-size: 0.85em; color: #6d4c41; line-height: 1.4; }
         .menu-knop-container { flex: 0.8; }
-        .menu-knop, .calc-knop { background: #8d6e63; color: white; padding: 12px 5px; border-radius: 12px; cursor: pointer; text-align: center; font-weight: bold; font-size: 0.85em; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .menu-knop, .calc-knop { background: #8d6e63; color: white; padding: 12px 5px; border-radius: 12px; cursor: pointer; text-align: center; font-weight: bold; font-size: 0.85em; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border:none; width: 100%; }
         .calc-knop { background: #5d4037; }
-
-        /* Detail Pagina's */
         .terug-knop { background: #5d4037; color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; margin-bottom: 15px; cursor: pointer; font-weight: bold; }
         .info-blok { text-align: left; line-height: 1.6; background: #fafafa; padding: 15px; border-radius: 10px; border-left: 5px solid #8d6e63; margin-bottom: 15px; font-size: 0.95em; }
-        .hoofd-img { width: 100%; height: 200px; border-radius: 15px; margin-bottom: 15px; object-fit: cover; background: #eee; }
+        .hoofd-img { width: 100%; height: 220px; border-radius: 15px; margin-bottom: 15px; object-fit: cover; background: #eee; }
         .recept-kaart { background: #fff; border: 1px solid #eee; padding: 12px; margin-top: 10px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; }
         .recept-kaart img { width: 55px; height: 55px; border-radius: 8px; margin-right: 15px; object-fit: cover; }
         .sub-knop { background: #a1887f; color: white; padding: 12px; margin: 8px 0; border-radius: 8px; cursor: pointer; text-align: center; width: 100%; border:none; font-weight: bold; }
+        input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ccc; box-sizing: border-box; margin-bottom: 15px; }
         ul { text-align: left; padding-left: 20px; }
-        li { margin-bottom: 6px; }
+        li { margin-bottom: 8px; }
+        h4 { margin: 15px 0 5px 0; color: #5d4037; text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -38,28 +36,28 @@
         <input type="text" id="zoekveld" placeholder="Zoek internationaal (bv. Ciabatta)">
         
         <div class="menu-rij">
-            <div class="menu-uitleg">Vind wereldwijde recepten via de Spoonacular database.</div>
-            <div class="menu-knop-container"><div class="menu-knop" onclick="haalSpoonacularData()">🌍 Global Search</div></div>
+            <div class="menu-uitleg">Zoek in duizenden recepten wereldwijd via de Spoonacular database.</div>
+            <div class="menu-knop-container"><button class="menu-knop" onclick="haalSpoonacularData()">🌍 Global Search</button></div>
         </div>
 
         <div class="menu-rij">
-            <div class="menu-uitleg">Exclusieve collectie voor je Panasonic SD-B2510 machine.</div>
-            <div class="menu-knop-container"><div class="menu-knop" onclick="toonPanasonicLijst()">📟 Panasonic brood recepten</div></div>
+            <div class="menu-uitleg">De volledige collectie Panasonic recepten (brood, cake & jam).</div>
+            <div class="menu-knop-container"><button class="menu-knop" onclick="toonPanasonicLijst()">📟 Panasonic brood recepten</button></div>
         </div>
 
         <div class="menu-rij">
-            <div class="menu-uitleg">Bereken de eindtijd voor je uitgestelde timer.</div>
-            <div class="menu-knop-container"><div class="calc-knop" onclick="toonTimerCalc()">⏰ Timer Calc</div></div>
+            <div class="menu-uitleg">Bereken de exacte timer-instelling voor vers brood.</div>
+            <div class="menu-knop-container"><button class="calc-knop" onclick="toonTimerCalc()">⏰ Timer Calc</button></div>
         </div>
 
         <div class="menu-rij">
-            <div class="menu-uitleg">De bakkersgids voor gistgebruik en omrekenen.</div>
-            <div class="menu-knop-container"><div class="menu-knop" onclick="toonGistGids()">🥐 Gist Gids</div></div>
+            <div class="menu-uitleg">Alles over gist, soorten en omrekenen (Rutger Bakt).</div>
+            <div class="menu-knop-container"><button class="menu-knop" onclick="toonGistGids()">🥐 Gist Gids</button></div>
         </div>
 
         <div class="menu-rij">
-            <div class="menu-uitleg">Complete gids voor de starter en de Panasonic methode.</div>
-            <div class="menu-knop-container"><div class="menu-knop" onclick="toonZuurdesemMenu()">🌿 Zuurdesem Gids</div></div>
+            <div class="menu-uitleg">Gids voor starters, onderhoud en de Panasonic methode.</div>
+            <div class="menu-knop-container"><button class="menu-knop" onclick="toonZuurdesemMenu()">🌿 Zuurdesem Gids</button></div>
         </div>
     </div>
 
@@ -74,44 +72,82 @@
 
     var panasonicRecepten = [
         { 
-            titel: "Basis Wit Brood (Klassiek)", img: "witbrood.png", programma: "Basic (Menu 1)", 
-            ingrediënten: ["1 tl gist", "500g witte broodbloem", "30g boter", "1.5 el suiker", "1.5 tl zout", "340ml water"],
-            tips: "Perfect voor beginners. Voor toevoegingen: gebruik Basic Raisin menu."
+            titel: "Basis Wit Brood (Klassiek)", img: "witbrood.png", programma: "Basic (Menu 1 op SD-B2510)", 
+            ingrediënten: ["1 tl droge gist", "500 g harde witte broodbloem", "30 g boter", "1½ el suiker", "1½ tl zout", "340 ml water"],
+            stappen: "1. Doe de gist onderin het blik. 2. Voeg bloem, boter, suiker en zout toe. 3. Giet het water eromheen. 4. Start Menu 1.",
+            tips: "De klassieker. Gebruik bloem met minstens 12% eiwit voor de beste rijs."
+        },
+        { 
+            titel: "Volkorenbrood", img: "volkorenbrood.png", programma: "Whole Wheat (Menu 7)", 
+            ingrediënten: ["1 tl droge gist", "400 g volkorenbloem", "20 g boter", "1 el suiker", "1.5 tl zout", "280 mL water"],
+            stappen: "Menu 7 heeft een langere rustfase (tot 1u 40m) om het stugge volkorenmeel goed te laten hydrateren.",
+            tips: "Dit brood is compacter maar voedzamer dan wit brood."
+        },
+        { 
+            titel: "Frans Brood", img: "frans_stokbrood.png", programma: "French (Menu 11)", 
+            ingrediënten: ["1 tl droge gist", "400 g witte broodbloem", "1.5 tl zout", "290 mL water"],
+            stappen: "Bevat geen vet of suiker. De lange cyclus van bijna 6 uur zorgt voor de smaakontwikkeling.",
+            tips: "Gebruik koud water in de zomer om overrijs te voorkomen."
+        },
+        { 
+            titel: "Brioche", img: "brioche_brood.png", programma: "Brioche (Menu 10)", 
+            ingrediënten: ["1.25 tl gist", "400 g bloem", "50 g suiker", "60 g boter", "2 eieren + water (270ml)", "Extra: 80 g koude boter"],
+            stappen: "Start menu 10. Voeg de extra 80g boter in blokjes toe wanneer de machine piept (na ca. 55 min).",
+            tips: "Gebruik 'Lichte Korst' kleur; door de suiker verbrandt brioche sneller."
+        },
+        { 
+            titel: "Focaccia", img: "foccacia_brood.png", programma: "Pizza/Deeg (Menu 23/24)", 
+            ingrediënten: ["0.5 tl gist", "300 g bloem", "1 el olijfolie", "1 tl zout", "170 mL water"],
+            stappen: "Machine maakt het deeg (45 min). Daarna op plaat uitdrukken, kuiltjes maken, olie/zout toevoegen. 30 min narijs.",
+            tips: "Lekker met verse rozemarijn of kerstomaatjes in de kuiltjes."
         },
         { 
             titel: "Aardappelbrood met Rozemarijn", img: "aardappelbrood.png", programma: "Basic (Menu 1)", 
-            ingrediënten: ["1 tl gist", "400g speltmeel (1050)", "10g boter", "0.75 tl suiker", "1.75 tl zout", "150g aardappels (gestampt)", "2 el rozemarijn", "150ml water"],
-            tips: "De aardappelen zorgen voor een zachte binnenkant. Bestrooi 1 uur voor einde met wat bloem."
+            ingrediënten: ["1 tl gist", "400g speltmeel (1050)", "10g boter", "¾ tl suiker", "1¾ tl zout", "150g aardappels (gestampt)", "2 el rozemarijn", "150ml water"],
+            stappen: "Gebruik voorgekookte, gestampte aardappelen. Voeg ze direct toe met de rest van de ingrediënten.",
+            tips: "Aardappel zorgt voor een extreem zachte kruim en een langere houdbaarheid."
         },
         { 
-            titel: "Cashew- en Walnotenbrood", img: "notenbrood.png", programma: "Basic Raisin (Menu 3)", 
-            ingrediënten: ["1 tl gist", "400g witbroodmeel", "10g boter", "0.75 tl suiker", "1.75 tl zout", "10g sesamzaad", "280ml water", "Vulling: 90g walnoten + 60g cashew"],
-            tips: "Voeg de noten pas toe bij het piepsignaal (na ca. 20-25 min)."
+            titel: "Brood met Cashew- en Walnoten", img: "notenbrood.png", programma: "Basic Raisin (Menu 3)", 
+            ingrediënten: ["1 tl gist", "400g witbroodmeel", "10g boter", "¾ tl suiker", "1¾ tl zout", "10g sesam", "280ml water", "90g walnoten + 60g cashew"],
+            stappen: "Voeg de noten pas toe bij de piep (na 20-30 min) zodat ze niet verpulverd worden.",
+            tips: "Rooster de noten kort in de pan voor extra aroma."
         },
         { 
-            titel: "Knapperig Rozemarijn & Tijm", img: "frans_stokbrood.png", programma: "Pizza/Deeg (Menu 17) + Oven", 
-            ingrediënten: ["1 el gist (papje)", "500g bloem", "1 el zout", "Takje rozemarijn & tijm", "300ml water totaal"],
-            tips: "De machine maakt het deeg. Bak in de oven op 230°C met stoom voor korst."
+            titel: "Pizzadeeg (Machine)", img: "pizza_deeg.png", programma: "Pizza (Menu 23)", 
+            ingrediënten: ["1 tl gist", "450 g bloem", "4 el olie", "2 tl zout", "240 mL water"],
+            stappen: "Snelle 45 min cyclus. Na afloop vormen en belegen. Bakken in de oven op 220°C.",
+            tips: "Ideaal voor een snelle doordeweekse maaltijd."
         },
         { 
-            titel: "Kerstpeperkoek (Banaan/Dadel)", img: "brioche_brood.png", programma: "Cake (Menu 15)", 
-            ingrediënten: ["40ml olijfolie", "3 rijpe bananen", "170g volkoren tarwebloem", "2 eieren", "50g melasse", "100g dadels", "1 tl baking soda", "Specerijen"],
-            tips: "Mix eieren en dadels eerst in een blender. Zuivelvrij recept."
+            titel: "Knapperig Kruidenbrood (Oven)", img: "frans_stokbrood.png", programma: "Pizza (Menu 17) + Oven", 
+            ingrediënten: ["1 el gist (papje)", "500g bloem", "1 el zout", "Rozemarijn & Tijm", "300ml water"],
+            stappen: "Machine kneedt. Daarna vormen, 45 min rijzen en bakken op 230°C in de oven met stoom.",
+            tips: "Gebruik een bakje water in de oven voor de korst."
+        },
+        { 
+            titel: "Kerstpeperkoek (Cake)", img: "brioche_brood.png", programma: "Cake (Menu 15)", 
+            ingrediënten: ["40ml olie", "3 bananen", "170g volkorenbloem", "2 eieren", "50g melasse", "100g dadels", "Specerijen"],
+            stappen: "Mix natte delen eerst. Schraap zijkanten blik schoon na de eerste mengfase.",
+            tips: "Gebruik ijskast-koude eieren en zeer rijpe bananen."
         },
         { 
             titel: "Panettone-stijl", img: "panettone.png", programma: "Basic Raisin (Menu 3)", 
-            ingrediënten: ["7g gist", "500g tarwemeel", "100g boter", "250ml lauwe melk", "1 ei + 2 dooiers", "100g poedersuiker", "Vulling: 350g zuidvruchten/noten"],
-            tips: "Kies een lichte korstkleur om verbranding van de suikers te voorkomen."
+            ingrediënten: ["7g gist", "500g meel", "100g boter", "250ml lauwe melk", "1 ei + 2 dooiers", "100g suiker", "300g vulling"],
+            stappen: "Rijk deeg. Gebruik 'Lichte Korst'. Voeg vulling toe bij de piep.",
+            tips: "Laat afkoelen op zijn zij om inzakken te voorkomen."
         },
         { 
-            titel: "Proteïnebrood (Maat S)", img: "proteine.png", programma: "Volkoren (Menu 5)", 
-            ingrediënten: ["0.75 tl gist", "291g broodmeel", "125g eiwit", "128g cottage cheese", "38g lauw water"],
-            tips: "Valt klein uit in de SD-B2510. Je kunt de hoeveelheden verdubbelen."
+            titel: "Klein Proteïnebrood (S)", img: "proteine.png", programma: "Volkoren (Menu 5)", 
+            ingrediënten: ["¾ tl gist", "291g broodmeel", "125g eiwit", "128g cottage cheese", "38g water"],
+            stappen: "Recept voor maat S. Cottage cheese direct toevoegen.",
+            tips: "Eiwitrijk en vullend."
         },
         { 
             titel: "Aardbeienjam", img: "jam.png", programma: "Jam (Menu 21)", 
-            ingrediënten: ["300g aardbeien (fijn)", "200g suiker", "7g pectine"],
-            tips: "Giet direct na afloop in schone potten. Pectine is essentieel voor binding."
+            ingrediënten: ["300g aardbeien", "200g suiker", "7g pectine"],
+            stappen: "Meng alles in blik. Start Menu 21. Direct in potten gieten.",
+            tips: "Heerlijk vers zonder conserveermiddelen."
         }
     ];
 
@@ -123,33 +159,33 @@
 
     function toonGistGids() {
         wisselScherm(true);
-        document.getElementById('inhoud').innerHTML = `<h3>🥐 Gist Gids</h3><img src="gist.png" class="hoofd-img"><button class="sub-knop" onclick="toonGistDetail('soorten')">De Soorten Gist</button><button class="sub-knop" onclick="toonGistDetail('omrekenen')">Omrekentabel</button><button class="sub-knop" onclick="toonGistDetail('tips')">Bakkersregels</button>`;
+        document.getElementById('inhoud').innerHTML = `<h3>🥐 Gist Gids</h3><img src="gist.png" class="hoofd-img"><button class="sub-knop" onclick="toonGistDetail('soorten')">Soorten Gist</button><button class="sub-knop" onclick="toonGistDetail('omrekenen')">Omrekentabel</button><button class="sub-knop" onclick="toonGistDetail('tips')">3 Gouden Regels</button>`;
     }
 
     function toonGistDetail(o) {
         var h = '<button class="terug-knop" onclick="toonGistGids()">⬅ Terug naar Gids</button>';
-        if(o==='soorten') h+='<div class="info-blok"><h4>Soorten</h4><p><strong>Instant:</strong> Direct bij bloem.<br><strong>Vers:</strong> Oplossen in water. Blokjes uit koeling.</p></div>';
+        if(o==='soorten') h+='<div class="info-blok"><h4>Soorten</h4><p><strong>Instant:</strong> Droge korrels, direct mengen.<br><strong>Vers:</strong> Blokjes uit de koeling, eerst oplossen in water.</p></div>';
         if(o==='omrekenen') h+='<div class="info-blok"><h4>Omrekenen</h4><p>Factor 3: 7g instant = 21g vers. Deel vers door 3 voor instant.</p></div>';
-        if(o==='tips') h+='<div class="info-blok"><h4>Gouden Regels</h4><p>Geen zout op gist. Water max 37°C. Kneden bouwt glutennetwerk.</p></div>';
+        if(o==='tips') h+='<div class="info-blok"><h4>Gouden Regels</h4><p>1. Geen zout op gist.<br>2. Water max 37°C.<br>3. Goed kneden.</p></div>';
         document.getElementById('inhoud').innerHTML = h;
     }
 
     function toonZuurdesemMenu() {
         wisselScherm(true);
-        document.getElementById('inhoud').innerHTML = `<h3>🌿 Zuurdesem Gids</h3><img src="zuurdesem.png" class="hoofd-img"><button class="sub-knop" onclick="toonZuurDetail('wild')">Wild Starter</button><button class="sub-knop" onclick="toonZuurDetail('snel')">Panasonic Methode</button><button class="sub-knop" onclick="toonZuurDetail('onderhoud')">Onderhoud</button>`;
+        document.getElementById('inhoud').innerHTML = `<h3>🌿 Zuurdesem Gids</h3><img src="zuurdesem.png" class="hoofd-img"><button class="sub-knop" onclick="toonZuurDetail('wild')">Wild Starter</button><button class="sub-knop" onclick="toonZuurDetail('snel')">Panasonic Snel</button><button class="sub-knop" onclick="toonZuurDetail('onderhoud')">Onderhoud</button>`;
     }
 
     function toonZuurDetail(o) {
         var h = '<button class="terug-knop" onclick="toonZuurdesemMenu()">⬅ Terug</button>';
-        if(o==='wild') h+='<div class="info-blok"><h4>Wild Starter</h4><p>5-14 dagen. Elke 24u voeden. Klaar als volume verdubbelt binnen 6u.</p></div>';
-        if(o==='snel') h+='<div class="info-blok"><h4>Panasonic Snel</h4><p>Bloem, water, gist + balsamico. 12u laten staan voor machine.</p></div>';
-        if(o==='onderhoud') h+='<div class="info-blok"><h4>Onderhoud</h4><p>Koelkast: 1x week voeden. Discard voor pannenkoeken of pizza.</p></div>';
+        if(o==='wild') h+='<div class="info-blok"><h4>Wild Starter</h4><p>Bloem + water, elke dag voeden. Na 5-10 dagen actief.</p></div>';
+        if(o==='snel') h+='<div class="info-blok"><h4>Snel</h4><p>Bloem, water, gist + balsamico voor de smaak. 12u rusten.</p></div>';
+        if(o==='onderhoud') h+='<div class="info-blok"><h4>Onderhoud</h4><p>Koelkast: 1x per week voeden. Discard voor pannenkoeken.</p></div>';
         document.getElementById('inhoud').innerHTML = h;
     }
 
     function toonPanasonicLijst() {
         wisselScherm(true);
-        var html = "<h3>Panasonic Recepten</h3>";
+        var html = "<h3>Panasonic brood recepten</h3>";
         panasonicRecepten.forEach((r, i) => { 
             html += '<div class="recept-kaart" onclick="toonPanaDetail(' + i + ')"><img src="' + r.img + '"><b>' + r.titel + '</b></div>'; 
         });
@@ -160,13 +196,13 @@
         var r = panasonicRecepten[i];
         var h = '<h2>'+r.titel+'</h2><img src="'+r.img+'" class="hoofd-img"><h4>Ingrediënten:</h4><ul>';
         r.ingrediënten.forEach(ing => { h += '<li>' + ing + '</li>'; });
-        h += '</ul><div class="info-blok"><h4>Programma:</h4><p>'+r.programma+'</p></div><div class="info-blok" style="background:#fff3e0;"><strong>Pro Tip:</strong> '+r.tips+'</div>';
-        document.getElementById('inhoud').innerHTML = '<button class="terug-knop" onclick="toonPanasonicLijst()">⬅ Terug</button>' + h;
+        h += '</ul><div class="info-blok"><h4>Bereiding & Programma:</h4><p><strong>' + r.programma + '</strong></p><p>'+r.stappen+'</p></div><div class="info-blok" style="background:#fff3e0; border-left-color:#ffa726;"><strong>Pro Tip:</strong> '+r.tips+'</div>';
+        document.getElementById('inhoud').innerHTML = '<button class="terug-knop" onclick="toonPanasonicLijst()">⬅ Terug naar Lijst</button>' + h;
     }
 
     function toonTimerCalc() {
         wisselScherm(true);
-        document.getElementById('inhoud').innerHTML = `<h3>⏰ Timer Calculator</h3><div class="info-blok"><p>Tijd NU:</p><input type="time" id="tijd-nu"><p>Klaar OM:</p><input type="time" id="tijd-klaar"><button class="menu-knop" onclick="berekenTimer()" style="width:100%">Bereken</button></div><div id="timer-resultaat" class="resultaat-box" style="display:none; padding:20px; font-weight:bold; font-size:1.4em; background:#e8f5e9;"></div>`;
+        document.getElementById('inhoud').innerHTML = `<h3>⏰ Timer Calculator</h3><div class="info-blok"><p>Tijd NU:</p><input type="time" id="tijd-nu"><p>Klaar OM:</p><input type="time" id="tijd-klaar"><button class="menu-knop" onclick="berekenTimer()" style="width:100%">Bereken Instelling</button></div><div id="timer-resultaat" class="resultaat-box" style="display:none; padding:20px; font-weight:bold; font-size:1.4em; background:#e8f5e9; border-radius:15px; text-align:center;"></div>`;
         var nu = new Date();
         document.getElementById('tijd-nu').value = nu.getHours().toString().padStart(2, '0') + ":" + nu.getMinutes().toString().padStart(2, '0');
     }
@@ -181,7 +217,7 @@
         var u = Math.floor(diff / 3600000);
         var m = Math.floor((diff % 3600000) / 60000);
         document.getElementById('timer-resultaat').style.display = "block";
-        document.getElementById('timer-resultaat').innerHTML = "Instelling machine:<br>" + u + ":" + m.toString().padStart(2, '0');
+        document.getElementById('timer-resultaat').innerHTML = "Stel in op: <strong>" + u + ":" + m.toString().padStart(2, '0') + "</strong>";
     }
 
     function haalSpoonacularData() {
@@ -191,7 +227,7 @@
         inhoud.innerHTML = "<p>Laden uit wereldwijde database...</p>";
         fetch("https://api.spoonacular.com/recipes/complexSearch?query=" + term + "&apiKey=" + MIJN_SLEUTEL)
             .then(res => res.json()).then(data => {
-                var html = "<h3>Global Search</h3>";
+                var html = "<h3>Wereldwijde Database</h3>";
                 data.results.forEach(r => { html += '<div class="recept-kaart" onclick="toonDetails(' + r.id + ')"><img src="' + r.image + '"><b>' + r.title + '</b></div>'; });
                 inhoud.innerHTML = html;
             });
