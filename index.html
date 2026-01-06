@@ -9,20 +9,36 @@
         body { font-family: -apple-system, sans-serif; background-color: var(--bg); color: #4e342e; padding: 15px; margin: 0; }
         .app { max-width: 500px; margin: auto; background: white; min-height: 95vh; padding: 20px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
         header { text-align: center; border-bottom: 2px solid var(--primary); margin-bottom: 25px; padding-bottom: 10px; }
+        
         .menu-rij { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; gap: 15px; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; }
         .menu-uitleg { flex: 1.2; font-size: 0.85em; color: #6d4c41; line-height: 1.4; }
+        
         .btn { background: var(--primary); color: white; padding: 12px 5px; border-radius: 12px; cursor: pointer; text-align: center; font-weight: bold; font-size: 0.85em; border:none; width: 100%; transition: transform 0.1s; display: block; }
         .btn:active { transform: scale(0.98); }
         .btn-dark { background: var(--dark); }
+
         .info-blok { text-align: left; line-height: 1.6; background: #fafafa; padding: 15px; border-radius: 10px; border-left: 5px solid var(--primary); margin-bottom: 15px; font-size: 0.95em; }
-        .hoofd-img { width: 100%; height: 220px; border-radius: 15px; margin-bottom: 15px; object-fit: cover; background: #eee; }
+        
+        /* AANGEPASTE FOTO STIJL */
+        .hoofd-img { 
+            width: 100%; 
+            height: 180px; /* Vaste compacte hoogte */
+            border-radius: 15px; 
+            margin-bottom: 15px; 
+            object-fit: cover; /* Zorgt voor mooie uitsnede zonder vervorming */
+            background: #eee; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
         .recept-kaart { background: #fff; border: 1px solid #eee; padding: 12px; margin-top: 10px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; }
+        .recept-kaart img { width: 55px; height: 55px; border-radius: 8px; margin-right: 15px; object-fit: cover; }
+        
         .img-placeholder { width: 55px; height: 55px; background: #eee; border-radius: 8px; margin-right: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5em; flex-shrink: 0; }
+        
         input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ccc; box-sizing: border-box; margin-bottom: 15px; }
-        .pro-tip { background: #fff3e0; border-left: 5px solid var(--accent); padding: 15px; border-radius: 10px; font-size: 0.9em; margin-bottom: 15px; border-top: 1px solid #ffe0b2; }
+        .pro-tip { background: #fff3e0; border-left: 5px solid var(--accent); padding: 15px; border-radius: 10px; font-size: 0.9em; margin-bottom: 15px; }
         ul { text-align: left; padding-left: 20px; }
         li { margin-bottom: 5px; }
-        h4 { margin: 10px 0 5px 0; color: var(--dark); }
     </style>
 </head>
 <body>
@@ -33,7 +49,7 @@
     <div id="scherm-hoofd">
         <input type="text" id="zoekveld" placeholder="Zoek internationaal recept...">
         <div class="menu-rij"><div class="menu-uitleg">Wereldwijde database via Spoonacular API.</div><div style="flex:0.8"><button class="btn" onclick="haalSpoonacularData()">🌍 Global Search</button></div></div>
-        <div class="menu-rij"><div class="menu-uitleg">De volledige Panasonic SD-B2510 collectie.</div><div style="flex:0.8"><button class="btn" onclick="renderLijst()">📟 Panasonic Recepten</button></div></div>
+        <div class="menu-rij"><div class="menu-uitleg">Alle Panasonic SD-B2510 recepten.</div><div style="flex:0.8"><button class="btn" onclick="renderLijst()">📟 Panasonic Recepten</button></div></div>
         <div class="menu-rij"><div class="menu-uitleg">Bereken de timer-instelling voor vers brood.</div><div style="flex:0.8"><button class="btn btn-dark" onclick="renderTimer()">⏰ Timer Calc</button></div></div>
     </div>
 
@@ -51,7 +67,7 @@
             naam: "Basis Wit Brood (Klassiek)",
             img: "witbrood.png",
             programma: "Basic (Menu 1 op SD-B2510)",
-            ingredienten: ["1 tl droge gist", "500 g witte broodbloem", "30 g boter", "1.5 el suiker", "1.5 tl zout", "340 ml water"],
+            ingredienten: ["1 tl droge gist", "500 g harde witte broodbloem", "30 g boter", "1.5 el suiker", "1.5 tl zout", "340 ml water"],
             tips: "Perfect voor beginners. Gebruik bloem met minstens 12% proteïne voor een optimale rijs. Tip: Voor een krokantere korst kies de 'Dark' korst-instelling."
         },
         {
@@ -167,6 +183,7 @@
         const r = PANASONIC_DB[index];
         dom.inhoud.innerHTML = `
             <h2>${r.naam}</h2>
+            ${r.img ? `<img src="${r.img}" class="hoofd-img" onerror="this.style.display='none'">` : ''}
             <div class="info-blok"><h4>Programma:</h4>${r.programma}</div>
             <div class="info-blok"><h4>Ingrediënten:</h4><ul>${r.ingredienten.map(ing => `<li>${ing}</li>`).join('')}</ul></div>
             <div class="pro-tip"><h4>Bakkers Tips:</h4>${r.tips}</div>
@@ -184,7 +201,7 @@
             dom.inhoud.innerHTML = `<h3>Resultaten voor "${query}"</h3>` + 
                 data.results.map(r => `
                     <div class="recept-kaart" onclick="toonSDetail(${r.id})">
-                        <img src="${r.image}" style="width:55px; height:55px; border-radius:8px; margin-right:15px;">
+                        <img src="${r.image}">
                         <b>${r.title}</b>
                     </div>
                 `).join('');
@@ -201,6 +218,7 @@
                 <img src="${r.image}" class="hoofd-img">
                 <div class="info-blok"><h4>Ingrediënten:</h4><ul>${r.extendedIngredients.map(i => `<li>${i.original}</li>`).join('')}</ul></div>
                 <div class="info-blok"><h4>Instructies:</h4><p>${r.instructions || "Geen stap-voor-stap instructies beschikbaar."}</p></div>
+                <button class="btn btn-dark" onclick="haalSpoonacularData()">⬅ Terug naar resultaten</button>
             `;
         } catch (err) { dom.inhoud.innerHTML = "<div class='error-msg'>Fout bij laden van recept.</div>"; }
     }
@@ -218,7 +236,7 @@
         let diff = d2 - d1, h = Math.floor(diff/3600000), m = Math.floor((diff%3600000)/60000);
         const res = document.getElementById('t-res');
         res.style.display = "block";
-        res.innerHTML = `Stel in op: <b>${h}:${m.toString().padStart(2,'0')}</b>`;
+        res.innerHTML = `Instellen op: <b>${h}:${m.toString().padStart(2,'0')}</b>`;
     }
 </script>
 </body>
