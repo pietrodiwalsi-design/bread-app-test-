@@ -9,18 +9,25 @@
         body { font-family: -apple-system, sans-serif; background-color: var(--bg); color: #4e342e; padding: 15px; margin: 0; }
         .app { max-width: 500px; margin: auto; background: white; min-height: 95vh; padding: 20px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
         header { text-align: center; border-bottom: 2px solid var(--primary); margin-bottom: 25px; padding-bottom: 10px; }
+        
         .menu-rij { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; gap: 15px; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; }
         .menu-uitleg { flex: 1.2; font-size: 0.85em; color: #6d4c41; line-height: 1.4; }
+        
         .btn { background: var(--primary); color: white; padding: 12px 5px; border-radius: 12px; cursor: pointer; text-align: center; font-weight: bold; font-size: 0.85em; border:none; width: 100%; transition: transform 0.1s; display: block; }
         .btn:active { transform: scale(0.98); }
         .btn-dark { background: var(--dark); }
         .btn-soup { background: var(--soup); }
+
         .info-blok { text-align: left; line-height: 1.6; background: #fafafa; padding: 15px; border-radius: 10px; border-left: 5px solid var(--primary); margin-bottom: 15px; font-size: 0.95em; }
         .hoofd-img { width: 100%; height: 180px; border-radius: 15px; margin-bottom: 15px; object-fit: cover; background: #eee; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        
         .recept-kaart { background: #fff; border: 1px solid #eee; padding: 12px; margin-top: 10px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; }
         .recept-kaart img { width: 55px; height: 55px; border-radius: 8px; margin-right: 15px; object-fit: cover; }
         .img-placeholder { width: 55px; height: 55px; background: #eee; border-radius: 8px; margin-right: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5em; flex-shrink: 0; }
-        .pairing-badge { background: #fff3e0; border: 1px solid var(--accent); padding: 10px; border-radius: 10px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; font-weight: bold; font-size: 0.9em; color: var(--dark); }
+        
+        .pairing-badge { background: #f1f8e9; border: 1px solid #81c784; padding: 10px; border-radius: 10px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; font-weight: bold; font-size: 0.9em; color: #2e7d32; }
+        .pairing-badge.soup-theme { background: #fff3e0; border-color: var(--accent); color: var(--dark); }
+
         input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ccc; box-sizing: border-box; margin-bottom: 15px; }
         .pro-tip { background: #fff3e0; border-left: 5px solid var(--accent); padding: 15px; border-radius: 10px; font-size: 0.9em; margin-bottom: 15px; }
         ul { text-align: left; padding-left: 20px; }
@@ -35,9 +42,9 @@
     <div id="scherm-hoofd">
         <input type="text" id="zoekveld" placeholder="Search global recipes...">
         <div class="menu-rij"><div class="menu-uitleg">Search Spoonacular database.</div><div style="flex:0.8"><button class="btn" onclick="haalSpoonacularData()">🌍 Global Search</button></div></div>
-        <div class="menu-rij"><div class="menu-uitleg">All Panasonic bread recipes.</div><div style="flex:0.8"><button class="btn" onclick="renderList('bread')">📟 Bread Recipes</button></div></div>
-        <div class="menu-rij"><div class="menu-uitleg">Detailed soup recipes.</div><div style="flex:0.8"><button class="btn btn-soup" onclick="renderList('soup')">🥣 Soup Recipes</button></div></div>
-        <div class="menu-rij"><div class="menu-uitleg">Calculate bread timer.</div><div style="flex:0.8"><button class="btn btn-dark" onclick="renderTimer()">⏰ Timer Calc</button></div></div>
+        <div class="menu-rij"><div class="menu-uitleg">Panasonic bread recipes with soup pairings.</div><div style="flex:0.8"><button class="btn" onclick="renderList('bread')">📟 Bread Recipes</button></div></div>
+        <div class="menu-rij"><div class="menu-uitleg">Hearty vegetable soups with bread pairings.</div><div style="flex:0.8"><button class="btn btn-soup" onclick="renderList('soup')">🥣 Soup Recipes</button></div></div>
+        <div class="menu-rij"><div class="menu-uitleg">Bread timer calculator.</div><div style="flex:0.8"><button class="btn btn-dark" onclick="renderTimer()">⏰ Timer Calc</button></div></div>
     </div>
 
     <div id="scherm-resultaat" style="display:none;">
@@ -50,64 +57,70 @@
     const API_KEY = "2386c821382b4094a3045c9c6ffd588d";
 
     const BREAD_DB = [
-        { name: "Basic White Bread (Classic)", img: "witbrood.png", program: "Basic (Menu 1)", ingredients: ["1 tsp dry yeast", "500g bread flour", "30g butter", "1.5 tbsp sugar", "1.5 tsp salt", "340ml water"], instructions: "Place yeast first, cover with dry ingredients, pour water around the edges. Run Menu 1.", tips: "Perfect for beginners. Use high protein flour (12%+)." },
-        { name: "Potato Rosemary Bread", img: "aardappelbrood.png", program: "Basic (Menu 1)", ingredients: ["1 tsp yeast", "400g spelt flour", "10g butter", "¾ tsp sugar", "1¾ tsp salt", "150g mashed potatoes", "2 tbsp rosemary", "150ml water"], instructions: "Add cooled mashed potatoes with all ingredients. The starch creates a very soft crumb.", tips: "Stays fresh longer than standard bread." },
-        { name: "Cashew & Walnut Bread", img: "notenbrood.png", program: "Basic Raisin (Menu 3)", ingredients: ["1 tsp yeast", "400g white flour", "10g butter", "10g sesame", "280ml water", "90g walnuts + 60g cashews"], instructions: "Add nuts only when the machine beeps (after ~25 mins) to keep them chunky.", tips: "Lightly toast nuts before adding for better flavor." },
-        { name: "Crispy Herb Bread (Oven)", img: "frans_stokbrood.png", program: "Pizza/Dough (Menu 17) + Oven", ingredients: ["1 tbsp yeast", "500g flour", "1 tbsp salt", "Rosemary & Thyme", "300ml water"], instructions: "Machine kneads. Shape, rise for 45 mins, bake at 230°C. Use steam in oven.", tips: "Place a tray of water in the oven for a professional crust." },
-        { name: "Christmas Gingerbread (Cake)", img: "brioche_brood.png", program: "Cake (Menu 15)", ingredients: ["40ml oil", "3 ripe bananas", "170g whole wheat flour", "2 eggs", "50g melasse", "100g dates", "1 tsp baking soda", "Ginger, Cinnamon"], instructions: "Mix wet parts first. Scrape sides of the pan after the first few minutes of mixing.", tips: "Dairy-free and delicious." },
-        { name: "Panettone Style", img: "panettone.png", program: "Basic Raisin (Menu 3)", ingredients: ["7g yeast", "500g flour", "100g butter", "250ml milk", "1 egg + 2 yolks", "100g icing sugar", "350g dried fruit/nuts"], instructions: "Warm milk/butter until lukewarm. Use 'Light Crust' setting. Add fruit at the beep.", tips: "Cool on its side to prevent collapsing." },
-        { name: "Brioche (Classic)", img: "brioche_brood.png", program: "Brioche (Menu 10)", ingredients: ["1.25 tsp yeast", "400g flour", "50g sugar", "60g butter", "2 eggs + water (270ml)", "80g extra cold butter"], instructions: "Start menu 10. Add the extra 80g cold butter cubes after the beep (approx. 55 mins).", tips: "Use room temp ingredients for the base, but ice cold butter for the second stage." },
-        { name: "Focaccia (Classic)", img: "focaccia_brood.png", program: "Pizza (Menu 23/24)", ingredients: ["0.5 tsp yeast", "300g flour", "1 tbsp olive oil", "1 tsp salt", "170ml water"], instructions: "Knead in machine. Press into tray, make dimples, add oil/salt. 30 min final rise.", tips: "Press rosemary or olives deep into the dimples." },
-        { name: "Whole Wheat", img: "volkorenbrood.png", program: "Whole Wheat (Menu 7)", ingredients: ["1 tsp yeast", "400g whole wheat flour", "20g butter", "280ml water"], instructions: "Menu 7 provides the longer soak time needed for heavy bran.", tips: "Result is denser but more nutritious." },
-        { name: "French Bread", img: "frans_stokbrood.png", program: "French (Menu 11)", ingredients: ["1 tsp yeast", "400g white flour", "1.5 tsp salt", "290ml water"], instructions: "No fat or sugar. The 6-hour cycle develops the authentic flavor.", tips: "Use cool water in summer." },
-        { name: "Pizza Dough", img: "pizza_deeg.png", program: "Pizza (Menu 23)", ingredients: ["1 tsp yeast", "450g flour", "4 tbsp oil", "240ml water"], instructions: "45 min cycle. Roll thin for crispy base. Bake at 220°C.", tips: "Use semolina on the tray." },
-        { name: "Small Protein Bread (S)", img: "proteine.png", program: "Whole Wheat (Menu 5)", ingredients: ["¾ tsp yeast", "291g flour", "125g egg white", "128g cottage cheese", "38g water"], instructions: "Specifically designed for high protein intake. Cottage cheese acts as a fat substitute.", tips: "Small loaf; double for large machines." },
-        { name: "Strawberry Jam", img: "jam.png", program: "Jam (Menu 21)", ingredients: ["300g strawberries", "200g sugar", "7g pectin"], instructions: "Chop fruit. Mix all in pan. Run Menu 21. Pour into jars while boiling hot.", tips: "Ensure kneading blade is removed if required by your model." },
-        { name: "Compote", img: "witbrood.png", program: "Compote (Menu 22)", ingredients: ["400g fruit", "2 tbsp sugar", "1 tbsp water"], instructions: "Menu 22. Perfect as a topping for yogurt.", tips: "Cut fruit into equal cubes." }
+        { name: "Basic White Bread (Classic)", img: "witbrood.png", pairing: "Roasted Tomato Soup or Creamy Mustard Soup", program: "Basic (Menu 1)", ingredients: ["1 tsp dry yeast", "500g bread flour", "30g butter", "1.5 tbsp sugar", "1.5 tsp salt", "340ml water"], instructions: "Place yeast first, cover with dry ingredients, pour water around edges. Run Menu 1.", tips: "Perfect for beginners. Use high protein flour (12%+)." },
+        { name: "Potato Rosemary Bread", img: "aardappelbrood.png", pairing: "Spicy Carrot Soup", program: "Basic (Menu 1)", ingredients: ["1 tsp yeast", "400g spelt flour", "10g butter", "150g mashed potatoes", "2 tbsp rosemary", "150ml water"], instructions: "Add cooled mashed potatoes with all ingredients. The starch creates a very soft crumb.", tips: "Stays fresh longer than standard bread." },
+        { name: "Cashew & Walnut Bread", img: "notenbrood.png", pairing: "Chickpea & Sweet Potato Soup", program: "Basic Raisin (Menu 3)", ingredients: ["1 tsp yeast", "400g white flour", "10g butter", "10g sesame", "280ml water", "90g walnuts + 60g cashews"], instructions: "Add nuts only when the machine beeps (after ~25 mins) to keep them chunky.", tips: "Lightly toast nuts before adding for better flavor." },
+        { name: "Crispy Herb Bread (Oven)", img: "frans_stokbrood.png", pairing: "Minestrone", program: "Pizza/Dough (Menu 17) + Oven", ingredients: ["1 tbsp yeast", "500g flour", "1 tbsp salt", "Rosemary & Thyme", "300ml water"], instructions: "Machine kneads. Shape, rise for 45 mins, bake at 230°C. Use steam in oven.", tips: "Place a tray of water in the oven for a professional crust." },
+        { name: "Brioche (Classic)", img: "brioche_brood.png", pairing: "Roasted Tomato Soup", program: "Brioche (Menu 10)", ingredients: ["1.25 tsp yeast", "400g flour", "50g sugar", "60g butter", "2 eggs + water (270ml)", "80g extra cold butter"], instructions: "Start menu 10. Add the extra 80g cold butter cubes after the beep (approx. 55 mins).", tips: "Use room temp ingredients for the base, but ice cold butter for the second stage." },
+        { name: "Focaccia (Classic)", img: "focaccia_brood.png", pairing: "Minestrone or Zucchini-Herb Soup", program: "Pizza (Menu 23/24)", ingredients: ["0.5 tsp yeast", "300g flour", "1 tbsp olive oil", "1 tsp salt", "170ml water"], instructions: "Knead in machine. Press into tray, make dimples, add oil/salt. 30 min final rise.", tips: "Press rosemary or olives deep into the dimples." },
+        { name: "Whole Wheat", img: "volkorenbrood.png", pairing: "Chickpea & Sweet Potato Soup", program: "Whole Wheat (Menu 7)", ingredients: ["1 tsp yeast", "400g whole wheat flour", "20g butter", "280ml water"], instructions: "Menu 7 provides the longer soak time needed for heavy bran.", tips: "Result is denser but more nutritious." },
+        { name: "French Bread", img: "frans_stokbrood.png", pairing: "Zucchini-Herb Soup", program: "French (Menu 11)", ingredients: ["1 tsp yeast", "400g white flour", "1.5 tsp salt", "290ml water"], instructions: "No fat or sugar. The 6-hour cycle develops the authentic flavor.", tips: "Use cool water in summer." },
+        { name: "Christmas Gingerbread", img: "brioche_brood.png", pairing: "Spicy Carrot Soup (for a sweet/savory contrast)", program: "Cake (Menu 15)", ingredients: ["40ml oil", "3 ripe bananas", "170g whole wheat flour", "2 eggs", "50g melasse", "100g dates"], instructions: "Mix wet parts first. Scrape sides of pan after 2 mins mixing.", tips: "Dairy-free." },
+        { name: "Panettone Style", img: "panettone.png", pairing: "None (Best enjoyed with coffee/tea)", program: "Basic Raisin (Menu 3)", ingredients: ["7g yeast", "500g flour", "100g butter", "250ml milk", "1 egg + 2 yolks"], instructions: "Lukewarm milk/butter. Use 'Light Crust'. Add fruit at beep.", tips: "Cool on its side." },
+        { name: "Pizza Dough", img: "pizza_deeg.png", pairing: "Roasted Tomato Soup", program: "Pizza (Menu 23)", ingredients: ["1 tsp yeast", "450g flour", "4 tbsp oil", "240ml water"], instructions: "45 min cycle. Roll thin, bake at 220°C.", tips: "Use semolina on the tray." },
+        { name: "Small Protein Bread (S)", img: "proteine.png", pairing: "Zucchini-Herb Soup", program: "Whole Wheat (Menu 5)", ingredients: ["¾ tsp yeast", "291g flour", "125g egg white", "128g cottage cheese"], instructions: "Add all to pan. Perfect high-protein meal base.", tips: "Small loaf." },
+        { name: "Strawberry Jam", img: "jam.png", pairing: "None", program: "Jam (Menu 21)", ingredients: ["300g strawberries", "200g sugar", "7g pectin"], instructions: "Chop fruit. Run Menu 21. Pour into jars hot.", tips: "Check your blade requirements." },
+        { name: "Compote", img: "witbrood.png", pairing: "None", program: "Compote (Menu 22)", ingredients: ["400g fruit", "2 tbsp sugar", "1 tbsp water"], instructions: "Perfect topping for yogurt.", tips: "Cut fruit into equal cubes." }
     ];
 
     const SOUP_DB = [
         { 
             name: "Minestrone (Rich Italian)", 
+            img: "minestrone.png",
             pairing: "Focaccia or French Bread", 
             ingredients: ["2 tbsp olive oil", "1 onion (chopped)", "2 stalks celery", "1 clove garlic", "1 carrot (cubed)", "200g green beans", "100g kidney beans", "100g cherry tomatoes", "1L veg stock", "175g pasta", "Fresh basil", "50g Parmesan"], 
-            instructions: "1. Prep: Finely chop onion, celery, and garlic. Cube carrot into 1cm pieces. Trim beans. <br>2. Sauté: Heat oil in a large pot. Add onion, celery, garlic and sauté for 5 mins until soft. Add carrots and cook 5 mins more. <br>3. Simmer: Pour in stock. Add both bean types, tomatoes, and pasta. Bring to a boil, then lower heat. Simmer until pasta and vegetables are tender. <br>4. Serve: Ladle into bowls. Top with fresh basil and plenty of Parmesan.", 
-            tips: "Traditionally used to soften stale bread. Replace pasta with rice for a gluten-free option." 
+            instructions: "1. Prep: Finely chop onion, celery, and garlic. Cube carrot into 1cm pieces. <br>2. Sauté: Heat oil. Add onion, celery, garlic and sauté for 5 mins. Add carrots and cook 5 mins more. <br>3. Simmer: Pour in stock. Add beans, tomatoes, and pasta. Simmer until pasta and veg are tender. <br>4. Serve: Garnish with basil and Parmesan.", 
+            tips: "Traditionally used to soften stale bread. This soup is hearty and filling." 
         },
         { 
             name: "Spicy Carrot Soup", 
-            pairing: "Potato Rosemary or Naan", 
-            ingredients: ["2 tbsp olive oil", "1 red onion", "2 cloves garlic", "2 tbsp spice mix (cumin, coriander, chili)", "650g carrots", "1L veg stock", "100ml yogurt"], 
-            instructions: "1. Toast: Dry roast the seeds/spices in the pot for 2 mins until smoking slightly. <br>2. Sauté: Add oil, onion, and garlic. Cook for 5 mins until onion is translucent. <br>3. Cook: Add chopped carrots and stock. Cover and simmer for 20-25 mins until carrots are mushy. <br>4. Blend: Use an immersion blender to puree until completely smooth. <br>5. Serve: Season with sea salt and serve with a cold yogurt swirl.", 
-            tips: "Toasting the spices first releases natural oils that would otherwise stay trapped." 
+            img: "spicy_carrot.png",
+            pairing: "Potato Rosemary Bread or Naan", 
+            ingredients: ["2 tbsp olive oil", "1 red onion", "2 cloves garlic", "2 tbsp spices (cumin, coriander, chili)", "650g carrots", "1L veg stock", "100ml yogurt"], 
+            instructions: "1. Toast: Dry roast spices in the pot for 2 mins until fragrant. <br>2. Sauté: Add oil, onion, and garlic. Cook 5 mins. <br>3. Cook: Add carrots and stock. Simmer for 25 mins until carrots are mushy. <br>4. Blend: Puree until completely smooth. <br>5. Serve: Season and top with a yogurt swirl.", 
+            tips: "Toasting the spices first is crucial for a deep flavor profile." 
         },
         { 
             name: "Creamy Zucchini-Herb", 
-            pairing: "French Baguette", 
+            img: "zucchini_herb.png",
+            pairing: "French Bread or Focaccia", 
             ingredients: ["2 spring onions", "800g zucchini (3cm chunks)", "50g arugula", "Fresh herbs (tarragon, basil, parsley)", "2 tsp cumin", "600ml water", "50ml cream cheese"], 
-            instructions: "1. Combine: Put zucchini, spring onions, arugula, herbs, and water in the pot. Water level should be just below the veg. <br>2. Simmer: Cook for 15 mins until zucchini is very tender. <br>3. Blend: Puree until vibrant green and smooth. <br>4. Finish: Whisk in the cream cheese while hot. Season generously with black pepper.", 
-            tips: "Zucchini is 95% water, so avoid over-diluting with too much stock." 
+            instructions: "1. Combine: Put zucchini, onions, arugula, herbs, and water in the pot. <br>2. Simmer: Cook for 15 mins until very tender. <br>3. Blend: Puree until vibrant green and smooth. <br>4. Finish: Whisk in cream cheese while hot. Season generously.", 
+            tips: "Zucchini is 95% water; don't use too much stock or it will be too thin." 
         },
         { 
             name: "Creamy Mustard Soup", 
+            img: "creamy_mustard.png",
             pairing: "Basic White Bread", 
             ingredients: ["1 leek (rings)", "250g potatoes (cubed)", "25g butter", "2 tbsp coarse mustard", "1 stock cube", "100ml heavy cream", "1L water"], 
-            instructions: "1. Sauté: Melt butter. Stir-fry leeks and potatoes for 3-4 mins. <br>2. Simmer: Add water, stock cube, and mustard. Boil, then simmer for 15 mins until potatoes are falling apart. <br>3. Puree: Blend until thick and velvety. <br>4. Cream: Stir in heavy cream. Do not boil again after adding cream.", 
-            tips: "Use 'Groninger' mustard for the most authentic texture with visible seeds." 
+            instructions: "1. Sauté: Melt butter. Stir-fry leeks and potatoes for 4 mins. <br>2. Simmer: Add water, stock cube, and mustard. Simmer for 15 mins. <br>3. Puree: Blend until velvety. <br>4. Cream: Stir in heavy cream. Taste and season.", 
+            tips: "Use coarse 'Groninger' mustard for the best texture." 
         },
         { 
             name: "Chickpea & Sweet Potato", 
-            pairing: "Cashew & Walnut Bread", 
-            ingredients: ["400g chickpeas", "300g sweet potatoes", "1/2 red pepper", "1L veg stock", "Lime juice", "Cilantro"], 
-            instructions: "1. Prepare: Peel and chop sweet potatoes into small cubes. Dice the red pepper. <br>2. Cook: Simmer chickpeas, potatoes, and peppers in stock for 20 mins. <br>3. Texture: Puree until smooth. If too thick, add a splash of water. <br>4. Zest: Add a squeeze of lime and fresh cilantro just before serving.", 
-            tips: "The potatoes and chickpeas act as natural thickeners; no flour or cream needed." 
+            img: "chickpea_sweet_potato.png",
+            pairing: "Cashew & Walnut Bread or Whole Wheat", 
+            ingredients: ["400g chickpeas", "300g sweet potatoes (cubed)", "1/2 red pepper", "1L veg stock", "Lime juice", "Cilantro"], 
+            instructions: "1. Cook: Simmer chickpeas, potatoes, and peppers in stock for 20 mins. <br>2. Blend: Puree until smooth. Add water if too thick. <br>3. Finish: Add lime juice and fresh cilantro before serving.", 
+            tips: "No cream needed; the potatoes and chickpeas make it naturally creamy." 
         },
         { 
             name: "Roasted Tomato Soup", 
-            pairing: "Grilled Cheese (Basic White)", 
-            ingredients: ["2 tbsp olive oil", "1 onion", "1 red pepper", "2 cloves garlic", "30g tomato puree", "3 tbsp balsamic", "600g tomatoes", "800ml veg stock", "Fresh basil"], 
-            instructions: "1. Sauté: Cook onion, garlic, and pepper in oil for 8 mins. <br>2. Deglaze: Add balsamic vinegar and let it bubble for 1 min to release browned bits. <br>3. Simmer: Add tomatoes, puree, stock, and basil. Simmer for 15 mins. <br>4. Blend: Puree until smooth. Pass through a sieve for a restaurant-style finish.", 
-            tips: "Balsamic vinegar provides the acidity needed to balance the sweetness of the tomatoes." 
+            img: "roasted_tomato.png",
+            pairing: "Basic White Bread (for Grilled Cheese) or Pizza Dough", 
+            ingredients: ["2 tbsp olive oil", "1 onion", "1 red pepper", "2 cloves garlic", "30g tomato puree", "3 tbsp balsamic", "600g tomatoes", "800ml veg stock", "Basil"], 
+            instructions: "1. Sauté: Cook onion, garlic, and pepper in oil for 8 mins. <br>2. Deglaze: Add balsamic vinegar. <br>3. Simmer: Add tomatoes, puree, and stock. Simmer for 15 mins. <br>4. Blend: Puree until smooth and add fresh basil.", 
+            tips: "Balsamic vinegar balances the natural sweetness of the tomatoes." 
         }
     ];
 
@@ -129,14 +142,19 @@
 
     function renderDetail(type, index) {
         const r = (type === 'bread' ? BREAD_DB : SOUP_DB)[index];
-        let pairingHtml = type === 'soup' ? `<div class="pairing-badge">🥖 Recommended Bread: ${r.pairing}</div>` : '';
+        const badgeClass = type === 'bread' ? 'pairing-badge' : 'pairing-badge soup-theme';
+        const icon = type === 'bread' ? '🥣' : '🥖';
+        const label = type === 'bread' ? 'Recommended Soup:' : 'Recommended Bread:';
+        
+        let pairingHtml = r.pairing !== "None" ? `<div class="${badgeClass}">${icon} ${label} ${r.pairing}</div>` : '';
         
         dom.inhoud.innerHTML = `
             <h2>${r.name}</h2>
             ${pairingHtml}
-            ${r.img ? `<img src="${r.img}" class="hoofd-img">` : ''}
+            ${r.img ? `<img src="${r.img}" class="hoofd-img" onerror="this.style.display='none'">` : ''}
+            ${r.program ? `<div class="info-blok"><h4>Program:</h4>${r.program}</div>` : ''}
             <div class="info-blok"><h4>Ingredients:</h4><ul>${r.ingredients.map(i => `<li>${i}</li>`).join('')}</ul></div>
-            <div class="info-blok"><h4>Cooking Instructions:</h4><p>${r.instructions}</p></div>
+            <div class="info-blok"><h4>Instructions:</h4><p>${r.instructions}</p></div>
             <div class="pro-tip"><h4>Pro Tips:</h4>${r.tips}</div>
             <button class="btn btn-dark" onclick="renderList('${type}')">⬅ Back to List</button>
         `;
@@ -144,16 +162,16 @@
 
     async function haalSpoonacularData() {
         const q = dom.zoek.value || 'bread'; toonScherm();
-        dom.inhoud.innerHTML = "<p>🔍 Searching...</p>";
+        dom.inhoud.innerHTML = "<p>🔍 Searching global database...</p>";
         try {
             const res = await fetch(`https://api.spoonacular.com/recipes/complexSearch?query=${q}&number=10&apiKey=${API_KEY}`);
             const data = await res.json();
-            dom.inhoud.innerHTML = `<h3>Search Results</h3>` + data.results.map(r => `<div class="recept-kaart" onclick="toonSDetail(${r.id})"><img src="${r.image}"><b>${r.title}</b></div>`).join('');
+            dom.inhoud.innerHTML = `<h3>Search Results for "${q}"</h3>` + data.results.map(r => `<div class="recept-kaart" onclick="toonSDetail(${r.id})"><img src="${r.image}"><b>${r.title}</b></div>`).join('');
         } catch (e) { dom.inhoud.innerHTML = "Error loading database."; }
     }
 
     async function toonSDetail(id) {
-        dom.inhoud.innerHTML = "<p>⌛ Loading...</p>";
+        dom.inhoud.innerHTML = "<p>⌛ Loading details...</p>";
         try {
             const res = await fetch(`https://api.spoonacular.com/recipes/${id}/information?apiKey=${API_KEY}`);
             const r = await res.json();
@@ -163,7 +181,7 @@
 
     function renderTimer() {
         toonScherm();
-        dom.inhoud.innerHTML = `<h3>Timer Calculator</h3><div class="info-blok"><p>Current Time:</p><input type="time" id="t-nu"><p>Ready at:</p><input type="time" id="t-klaar"><button class="btn" onclick="calc()">Calculate</button></div><div id="t-res" class="info-blok" style="display:none; text-align:center; font-size:1.5em;"></div>`;
+        dom.inhoud.innerHTML = `<h3>Timer Calculator</h3><div class="info-blok"><p>Current Time:</p><input type="time" id="t-nu"><p>Ready at:</p><input type="time" id="t-klaar"><button class="btn" onclick="calc()">Calculate Panasonic Timer</button></div><div id="t-res" class="info-blok" style="display:none; text-align:center; font-size:1.5em; background:#e8f5e9;"></div>`;
         document.getElementById('t-nu').value = new Date().toTimeString().slice(0,5);
     }
 
