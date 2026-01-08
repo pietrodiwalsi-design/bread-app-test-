@@ -9,24 +9,18 @@
         body { font-family: -apple-system, sans-serif; background-color: var(--bg); color: #4e342e; padding: 15px; margin: 0; }
         .app { max-width: 500px; margin: auto; background: white; min-height: 95vh; padding: 20px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
         header { text-align: center; border-bottom: 2px solid var(--primary); margin-bottom: 25px; padding-bottom: 10px; }
-        
         .menu-rij { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; gap: 15px; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; }
         .menu-uitleg { flex: 1.2; font-size: 0.85em; color: #6d4c41; line-height: 1.4; }
-        
         .btn { background: var(--primary); color: white; padding: 12px 5px; border-radius: 12px; cursor: pointer; text-align: center; font-weight: bold; font-size: 0.85em; border:none; width: 100%; transition: transform 0.1s; display: block; }
         .btn:active { transform: scale(0.98); }
         .btn-dark { background: var(--dark); }
         .btn-soup { background: var(--soup); }
-
         .info-blok { text-align: left; line-height: 1.6; background: #fafafa; padding: 15px; border-radius: 10px; border-left: 5px solid var(--primary); margin-bottom: 15px; font-size: 0.95em; }
         .hoofd-img { width: 100%; height: 180px; border-radius: 15px; margin-bottom: 15px; object-fit: cover; background: #eee; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        
         .recept-kaart { background: #fff; border: 1px solid #eee; padding: 12px; margin-top: 10px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; }
         .recept-kaart img { width: 55px; height: 55px; border-radius: 8px; margin-right: 15px; object-fit: cover; }
         .img-placeholder { width: 55px; height: 55px; background: #eee; border-radius: 8px; margin-right: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5em; flex-shrink: 0; }
-        
         .pairing-badge { background: #fff3e0; border: 1px solid var(--accent); padding: 10px; border-radius: 10px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; font-weight: bold; font-size: 0.9em; color: var(--dark); }
-        
         input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ccc; box-sizing: border-box; margin-bottom: 15px; }
         .pro-tip { background: #fff3e0; border-left: 5px solid var(--accent); padding: 15px; border-radius: 10px; font-size: 0.9em; margin-bottom: 15px; }
         ul { text-align: left; padding-left: 20px; }
@@ -40,10 +34,10 @@
 
     <div id="scherm-hoofd">
         <input type="text" id="zoekveld" placeholder="Search global recipes...">
-        <div class="menu-rij"><div class="menu-uitleg">Search thousands of recipes via Spoonacular.</div><div style="flex:0.8"><button class="btn" onclick="haalSpoonacularData()">🌍 Global Search</button></div></div>
-        <div class="menu-rij"><div class="menu-uitleg">Full collection of Panasonic bread recipes.</div><div style="flex:0.8"><button class="btn" onclick="renderList('bread')">📟 Bread Recipes</button></div></div>
-        <div class="menu-rij"><div class="menu-uitleg">Hearty vegetable soups with bread pairings.</div><div style="flex:0.8"><button class="btn btn-soup" onclick="renderList('soup')">🥣 Soup Recipes</button></div></div>
-        <div class="menu-rij"><div class="menu-uitleg">Calculate the timer setting for your machine.</div><div style="flex:0.8"><button class="btn btn-dark" onclick="renderTimer()">⏰ Timer Calc</button></div></div>
+        <div class="menu-rij"><div class="menu-uitleg">Search Spoonacular database.</div><div style="flex:0.8"><button class="btn" onclick="haalSpoonacularData()">🌍 Global Search</button></div></div>
+        <div class="menu-rij"><div class="menu-uitleg">All Panasonic bread recipes.</div><div style="flex:0.8"><button class="btn" onclick="renderList('bread')">📟 Bread Recipes</button></div></div>
+        <div class="menu-rij"><div class="menu-uitleg">Detailed soup recipes.</div><div style="flex:0.8"><button class="btn btn-soup" onclick="renderList('soup')">🥣 Soup Recipes</button></div></div>
+        <div class="menu-rij"><div class="menu-uitleg">Calculate bread timer.</div><div style="flex:0.8"><button class="btn btn-dark" onclick="renderTimer()">⏰ Timer Calc</button></div></div>
     </div>
 
     <div id="scherm-resultaat" style="display:none;">
@@ -73,12 +67,48 @@
     ];
 
     const SOUP_DB = [
-        { name: "Minestrone (Rich Italian)", pairing: "Focaccia or French Bread", ingredients: ["Olive oil", "Onion, Celery, Garlic", "Carrot", "Green beans", "Kidney beans", "Pasta", "Veg Stock", "Parmesan"], instructions: "Sauté veg, add stock and pasta, simmer until tender. Garnish with basil.", tips: "Designed to be eaten with crusty bread." },
-        { name: "Spicy Carrot Soup", pairing: "Potato Rosemary or Naan", ingredients: ["Carrots", "Red onion", "Roasted spices", "Veg stock", "Yogurt"], instructions: "Toast spices, sauté onion/carrots, simmer in stock, puree smooth.", tips: "Toasting spices is key for depth." },
-        { name: "Creamy Zucchini-Herb", pairing: "French Baguette", ingredients: ["Zucchini", "Spring onions", "Arugula", "Fresh herbs", "Cream cheese"], instructions: "Simmer zucchini and herbs, blend smooth, stir in cream cheese.", tips: "Less stock is needed due to zucchini water content." },
-        { name: "Creamy Mustard Soup", pairing: "Basic White Bread", ingredients: ["Leek", "Potatoes", "Butter", "Coarse Mustard", "Cream"], instructions: "Sauté leek/potato, simmer with mustard/stock, puree and add cream.", tips: "Groninger mustard adds best texture." },
-        { name: "Chickpea & Sweet Potato", pairing: "Cashew & Walnut Bread", ingredients: ["Chickpeas", "Sweet potatoes", "Red pepper", "Veg stock"], instructions: "Chop and simmer all ingredients until potatoes are soft, then puree.", tips: "Add curry powder for an Indian twist." },
-        { name: "Roasted Tomato Soup", pairing: "Grilled Cheese (Basic White)", ingredients: ["Tomatoes", "Balsamic", "Red pepper", "Tomato puree", "Basil"], instructions: "Sauté veg, deglaze with balsamic, simmer with stock, puree with basil.", tips: "The ultimate bread dipping soup." }
+        { 
+            name: "Minestrone (Rich Italian)", 
+            pairing: "Focaccia or French Bread", 
+            ingredients: ["2 tbsp olive oil", "1 onion (chopped)", "2 stalks celery", "1 clove garlic", "1 carrot (cubed)", "200g green beans", "100g kidney beans", "100g cherry tomatoes", "1L veg stock", "175g pasta", "Fresh basil", "50g Parmesan"], 
+            instructions: "1. Prep: Finely chop onion, celery, and garlic. Cube carrot into 1cm pieces. Trim beans. <br>2. Sauté: Heat oil in a large pot. Add onion, celery, garlic and sauté for 5 mins until soft. Add carrots and cook 5 mins more. <br>3. Simmer: Pour in stock. Add both bean types, tomatoes, and pasta. Bring to a boil, then lower heat. Simmer until pasta and vegetables are tender. <br>4. Serve: Ladle into bowls. Top with fresh basil and plenty of Parmesan.", 
+            tips: "Traditionally used to soften stale bread. Replace pasta with rice for a gluten-free option." 
+        },
+        { 
+            name: "Spicy Carrot Soup", 
+            pairing: "Potato Rosemary or Naan", 
+            ingredients: ["2 tbsp olive oil", "1 red onion", "2 cloves garlic", "2 tbsp spice mix (cumin, coriander, chili)", "650g carrots", "1L veg stock", "100ml yogurt"], 
+            instructions: "1. Toast: Dry roast the seeds/spices in the pot for 2 mins until smoking slightly. <br>2. Sauté: Add oil, onion, and garlic. Cook for 5 mins until onion is translucent. <br>3. Cook: Add chopped carrots and stock. Cover and simmer for 20-25 mins until carrots are mushy. <br>4. Blend: Use an immersion blender to puree until completely smooth. <br>5. Serve: Season with sea salt and serve with a cold yogurt swirl.", 
+            tips: "Toasting the spices first releases natural oils that would otherwise stay trapped." 
+        },
+        { 
+            name: "Creamy Zucchini-Herb", 
+            pairing: "French Baguette", 
+            ingredients: ["2 spring onions", "800g zucchini (3cm chunks)", "50g arugula", "Fresh herbs (tarragon, basil, parsley)", "2 tsp cumin", "600ml water", "50ml cream cheese"], 
+            instructions: "1. Combine: Put zucchini, spring onions, arugula, herbs, and water in the pot. Water level should be just below the veg. <br>2. Simmer: Cook for 15 mins until zucchini is very tender. <br>3. Blend: Puree until vibrant green and smooth. <br>4. Finish: Whisk in the cream cheese while hot. Season generously with black pepper.", 
+            tips: "Zucchini is 95% water, so avoid over-diluting with too much stock." 
+        },
+        { 
+            name: "Creamy Mustard Soup", 
+            pairing: "Basic White Bread", 
+            ingredients: ["1 leek (rings)", "250g potatoes (cubed)", "25g butter", "2 tbsp coarse mustard", "1 stock cube", "100ml heavy cream", "1L water"], 
+            instructions: "1. Sauté: Melt butter. Stir-fry leeks and potatoes for 3-4 mins. <br>2. Simmer: Add water, stock cube, and mustard. Boil, then simmer for 15 mins until potatoes are falling apart. <br>3. Puree: Blend until thick and velvety. <br>4. Cream: Stir in heavy cream. Do not boil again after adding cream.", 
+            tips: "Use 'Groninger' mustard for the most authentic texture with visible seeds." 
+        },
+        { 
+            name: "Chickpea & Sweet Potato", 
+            pairing: "Cashew & Walnut Bread", 
+            ingredients: ["400g chickpeas", "300g sweet potatoes", "1/2 red pepper", "1L veg stock", "Lime juice", "Cilantro"], 
+            instructions: "1. Prepare: Peel and chop sweet potatoes into small cubes. Dice the red pepper. <br>2. Cook: Simmer chickpeas, potatoes, and peppers in stock for 20 mins. <br>3. Texture: Puree until smooth. If too thick, add a splash of water. <br>4. Zest: Add a squeeze of lime and fresh cilantro just before serving.", 
+            tips: "The potatoes and chickpeas act as natural thickeners; no flour or cream needed." 
+        },
+        { 
+            name: "Roasted Tomato Soup", 
+            pairing: "Grilled Cheese (Basic White)", 
+            ingredients: ["2 tbsp olive oil", "1 onion", "1 red pepper", "2 cloves garlic", "30g tomato puree", "3 tbsp balsamic", "600g tomatoes", "800ml veg stock", "Fresh basil"], 
+            instructions: "1. Sauté: Cook onion, garlic, and pepper in oil for 8 mins. <br>2. Deglaze: Add balsamic vinegar and let it bubble for 1 min to release browned bits. <br>3. Simmer: Add tomatoes, puree, stock, and basil. Simmer for 15 mins. <br>4. Blend: Puree until smooth. Pass through a sieve for a restaurant-style finish.", 
+            tips: "Balsamic vinegar provides the acidity needed to balance the sweetness of the tomatoes." 
+        }
     ];
 
     const dom = { hoofd: document.getElementById('scherm-hoofd'), res: document.getElementById('scherm-resultaat'), inhoud: document.getElementById('inhoud'), zoek: document.getElementById('zoekveld') };
@@ -106,7 +136,7 @@
             ${pairingHtml}
             ${r.img ? `<img src="${r.img}" class="hoofd-img">` : ''}
             <div class="info-blok"><h4>Ingredients:</h4><ul>${r.ingredients.map(i => `<li>${i}</li>`).join('')}</ul></div>
-            <div class="info-blok"><h4>Instructions:</h4><p>${r.instructions}</p></div>
+            <div class="info-blok"><h4>Cooking Instructions:</h4><p>${r.instructions}</p></div>
             <div class="pro-tip"><h4>Pro Tips:</h4>${r.tips}</div>
             <button class="btn btn-dark" onclick="renderList('${type}')">⬅ Back to List</button>
         `;
