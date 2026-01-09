@@ -6,51 +6,50 @@
     <title>Bread & Soup Pro</title>
     <style>
         :root {
-            --bg-glass: rgba(255, 255, 255, 0.85);
+            --bg-glass: rgba(255, 255, 255, 0.92);
             --bread-color: #d8a47f;
             --soup-color: #a0522d;
             --search-color: #546e7a;
             --accent: #ffa726;
+            --text: #4e342e;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: url('https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&q=80&w=1000') no-repeat center center fixed;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: url('https://images.unsplash.com/photo-1589367920969-bb8e0955d7ff?auto=format&fit=crop&q=80&w=1000') no-repeat center center fixed;
             background-size: cover;
             margin: 0;
             display: flex;
             justify-content: center;
             height: 100vh;
+            color: var(--text);
         }
 
         .app {
             width: 100%;
-            max-width: 450px;
+            max-width: 480px;
             background: var(--bg-glass);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
             display: flex;
             flex-direction: column;
             position: relative;
-            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            box-shadow: 0 0 40px rgba(0,0,0,0.3);
         }
 
         header {
             padding: 20px;
             text-align: center;
             background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-bottom: 1px solid #eee;
         }
-
-        header h1 { margin: 0; font-size: 1.4em; color: #4e342e; }
 
         #main-content {
             flex: 1;
             overflow-y: auto;
             padding: 20px;
-            padding-bottom: 80px;
+            padding-bottom: 90px;
         }
 
-        /* Navigatie Tabs onderaan */
         .tab-bar {
             position: absolute;
             bottom: 0;
@@ -58,7 +57,8 @@
             display: flex;
             background: white;
             border-top: 1px solid #ddd;
-            height: 65px;
+            height: 70px;
+            padding-bottom: env(safe-area-inset-bottom);
         }
 
         .tab {
@@ -67,99 +67,158 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-size: 0.7em;
-            color: #777;
+            font-size: 0.75em;
+            color: #888;
             cursor: pointer;
-            transition: 0.3s;
         }
 
         .tab.active { color: var(--soup-color); font-weight: bold; }
-        .tab i { font-size: 1.5em; margin-bottom: 4px; }
+        .tab span { font-size: 1.6em; margin-bottom: 2px; }
 
-        /* Card styling */
         .card {
             background: white;
-            border-radius: 15px;
-            padding: 15px;
+            border-radius: 16px;
+            padding: 16px;
             margin-bottom: 15px;
             border-left: 6px solid var(--bread-color);
-            transition: transform 0.2s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             cursor: pointer;
         }
 
-        .card:active { transform: scale(0.98); }
         .card.soup-card { border-left-color: var(--soup-color); }
-        .card.search-card { border-left-color: var(--search-color); }
-
+        
         .tag {
             display: inline-block;
-            padding: 3px 8px;
-            border-radius: 5px;
+            padding: 4px 10px;
+            border-radius: 6px;
             font-size: 0.7em;
             text-transform: uppercase;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             font-weight: bold;
+            letter-spacing: 0.5px;
         }
         .tag-machine { background: #fff3e0; color: #e65100; }
         .tag-soup { background: #fbe9e7; color: #d84315; }
 
-        .hoofd-img { width: 100%; height: 180px; border-radius: 12px; object-fit: cover; margin-bottom: 15px; }
+        .hoofd-img { width: 100%; height: 180px; border-radius: 12px; object-fit: cover; margin-bottom: 15px; background: #eee; }
+        .info-blok { background: #fdfcfb; padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #f0e6de; }
+        .pro-tip { background: #fff3e0; border-left: 5px solid var(--accent); padding: 15px; border-radius: 10px; font-size: 0.9em; margin-bottom: 15px; }
         
         input {
-            width: 100%; padding: 12px; border-radius: 25px; border: 1px solid #ddd;
-            margin-bottom: 15px; outline: none; box-sizing: border-box;
+            width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #ddd;
+            margin-bottom: 15px; outline: none; box-sizing: border-box; font-size: 1em;
         }
-
-        .info-blok { background: #f9f9f9; padding: 15px; border-radius: 10px; margin-bottom: 15px; font-size: 0.9em; }
+        
+        ul { padding-left: 20px; margin: 5px 0; }
+        li { margin-bottom: 6px; }
+        h2 { margin-top: 0; color: var(--dark); }
+        h4 { margin: 0 0 8px 0; color: var(--soup-color); text-transform: uppercase; font-size: 0.8em; }
     </style>
 </head>
 <body>
 
 <div class="app">
-    <header><h1 id="view-title">Bread & Soup Partner</h1></header>
+    <header><h1 id="view-title" style="margin:0; font-size: 1.2em;">Bread & Soup Pro</h1></header>
 
-    <div id="main-content">
-        </div>
+    <div id="main-content"></div>
 
     <nav class="tab-bar">
-        <div class="tab" onclick="changeView('search')"><span>🌍</span>Search</div>
-        <div class="tab" onclick="changeView('bread')"><span>📟</span>Machine</div>
-        <div class="tab" onclick="changeView('general')"><span>🥖</span>General</div>
-        <div class="tab" onclick="changeView('soup')"><span>🥣</span>Soup</div>
-        <div class="tab" onclick="renderTimer()"><span>⏰</span>Timer</div>
+        <div class="tab" onclick="changeView('search')" id="tab-search"><span>🌍</span>Search</div>
+        <div class="tab" onclick="changeView('bread')" id="tab-bread"><span>📟</span>Machine</div>
+        <div class="tab" onclick="changeView('general')" id="tab-general"><span>🥖</span>General</div>
+        <div class="tab" onclick="changeView('soup')" id="tab-soup"><span>🥣</span>Soup</div>
+        <div class="tab" onclick="renderTimer()" id="tab-timer"><span>⏰</span>Timer</div>
     </nav>
 </div>
 
 <script>
-    // Database remains the same as previous (BREAD_DB & SOUP_DB)
-    // [I've condensed it for brevity, but you should use the 14 recipes here]
+    const API_KEY = "2386c821382b4094a3045c9c6ffd588d";
+
     const BREAD_DB = [
-        { name: "Basic White Bread (Classic)", machine: true, img: "witbrood.png", pairing: "Roasted Tomato Soup", program: "Basic (Menu 1)", ingredients: ["1 tsp yeast", "500g flour", "340ml water"], tips: "Use high protein flour." },
-        // ... include all other 13 recipes with "machine: true"
+        { name: "Basic White Bread (Classic)", machine: true, img: "witbrood.png", pairing: "Roasted Tomato Soup", program: "Basic (Menu 1)", ingredients: ["1 tsp yeast", "500g bread flour", "30g butter", "1.5 tbsp sugar", "1.5 tsp salt", "340ml water"], tips: "Use high protein flour (12%+) for the best rise." },
+        { name: "Potato Rosemary Bread", machine: true, img: "potato_rosemary.png", pairing: "Spicy Carrot Soup", program: "Basic (Menu 1)", ingredients: ["1 tsp yeast", "400g spelt flour", "10g butter", "150g mashed potatoes", "2 tbsp rosemary", "150ml water"], tips: "Potatoes keep the bread moist for days." },
+        { name: "Cashew & Walnut Bread", machine: true, img: "nut_bread.png", pairing: "Chickpea & Sweet Potato Soup", program: "Basic Raisin (Menu 3)", ingredients: ["1 tsp yeast", "400g white flour", "10g butter", "10g sesame", "280ml water", "150g mixed nuts"], tips: "Add nuts at the beep to keep them whole." },
+        { name: "Crispy Herb Bread", machine: true, img: "herb_bread.png", pairing: "Minestrone", program: "Pizza/Dough (Menu 17) + Oven", ingredients: ["1 tbsp yeast", "500g flour", "Salt", "Rosemary & Thyme", "260ml water"], tips: "Bake at 230°C in the oven with a tray of water for steam." },
+        { name: "Brioche (Classic)", machine: true, img: "brioche.png", pairing: "Roasted Tomato Soup", program: "Brioche (Menu 10)", ingredients: ["1.25 tsp yeast", "400g flour", "50g sugar", "60g butter", "2 eggs + water (270ml)", "80g extra cold butter"], tips: "Add the extra 80g butter cubes after the beep." },
+        { name: "Focaccia", machine: true, img: "focaccia.png", pairing: "Minestrone", program: "Pizza/Dough (Menu 23/24)", ingredients: ["0.5 tsp yeast", "300g flour", "1 tbsp olive oil", "170ml water"], tips: "Make deep dimples and fill with oil and sea salt." },
+        { name: "Whole Wheat", machine: true, img: "whole_wheat.png", pairing: "Chickpea & Sweet Potato Soup", program: "Whole Wheat (Menu 7)", ingredients: ["1 tsp yeast", "400g whole wheat flour", "20g butter", "280ml water"], tips: "Menu 7 provides a longer soak time for the bran." },
+        { name: "French Bread", machine: true, img: "french_bread.png", pairing: "Zucchini-Herb Soup", program: "French (Menu 11)", ingredients: ["1 tsp yeast", "400g white flour", "1.5 tsp salt", "290ml water"], tips: "This 6-hour cycle creates the most authentic crust." },
+        { name: "Christmas Gingerbread", machine: true, img: "gingerbread.png", pairing: "Spicy Carrot Soup", program: "Cake (Menu 15)", ingredients: ["40ml oil", "3 ripe bananas", "170g flour", "2 eggs", "Dates", "Spices"], tips: "Scrape the sides of the pan after 2 mins of mixing." },
+        { name: "Panettone Style", machine: true, img: "panettone.png", pairing: "None", program: "Basic Raisin (Menu 3)", ingredients: ["7g yeast", "500g flour", "100g butter", "250ml milk", "Dried fruit"], tips: "Use 'Light Crust' setting to avoid burning the sugar." },
+        { name: "Pizza Dough", machine: true, img: "pizza_dough.png", pairing: "Roasted Tomato Soup", program: "Pizza (Menu 23)", ingredients: ["1 tsp yeast", "450g flour", "4 tbsp oil", "240ml water"], tips: "Roll thin for a crispy pizzeria-style base." },
+        { name: "Protein Bread (S)", machine: true, img: "protein_bread.png", pairing: "Zucchini-Herb Soup", program: "Whole Wheat (Menu 5)", ingredients: ["¾ tsp yeast", "291g flour", "125g egg white", "128g cottage cheese"], tips: "A small, high-protein loaf. Great for health-conscious meals." },
+        { name: "Strawberry Jam", machine: true, img: "strawberry_jam.png", pairing: "None", program: "Jam (Menu 21)", ingredients: ["300g strawberries", "200g sugar", "7g pectin"], tips: "Pour into jars while boiling hot." },
+        { name: "Fruit Compote", machine: true, img: "compote.png", pairing: "None", program: "Compote (Menu 22)", ingredients: ["400g fruit", "2 tbsp sugar", "1 tbsp water"], tips: "Cut fruit into even chunks for consistent texture." }
     ];
 
     const SOUP_DB = [
-        { name: "Minestrone (Rich Italian)", img: "minestrone.png", pairing: "Focaccia", ingredients: ["Veg stock", "Pasta", "Beans"], instructions: "Sauté veg and simmer.", tips: "Perfect for dipping." },
-        // ... include all 6 soups
+        { 
+            name: "Minestrone (Rich Italian)", 
+            img: "minestrone.png",
+            pairing: "Focaccia or French Bread", 
+            ingredients: ["2 tbsp olive oil", "1 onion", "2 stalks celery", "1 carrot", "200g green beans", "100g kidney beans", "1L veg stock", "175g pasta", "Parmesan"], 
+            instructions: "Sauté onion, celery, and carrot. Add stock, beans, and pasta. Simmer until tender. Garnish with basil and Parmesan.",
+            tips: "Traditionally eaten with crusty bread to soak up the rich broth." 
+        },
+        { 
+            name: "Spicy Carrot Soup", 
+            img: "spicy_carrot.png",
+            pairing: "Potato Rosemary Bread", 
+            ingredients: ["650g carrots", "1 red onion", "2 cloves garlic", "2 tbsp roasted spices", "1L veg stock", "Yogurt"], 
+            instructions: "Toast spices, sauté onion/garlic, add carrots and stock. Simmer for 25 mins then blend until smooth.",
+            tips: "Toasting the spices first is key to releasing the natural oils." 
+        },
+        { 
+            name: "Creamy Zucchini-Herb", 
+            img: "zucchini_herb.png",
+            pairing: "French Bread or Protein Bread", 
+            ingredients: ["800g zucchini", "2 spring onions", "50g arugula", "Fresh herbs", "600ml water", "50ml cream cheese"], 
+            instructions: "Simmer all ingredients except cream cheese for 15 mins. Blend smooth and stir in cheese.",
+            tips: "Zucchini has high water content; don't over-dilute with stock." 
+        },
+        { 
+            name: "Creamy Mustard Soup", 
+            img: "creamy_mustard.png",
+            pairing: "Basic White Bread", 
+            ingredients: ["1 leek", "250g potatoes", "25g butter", "2 tbsp coarse mustard", "100ml heavy cream"], 
+            instructions: "Sauté leek/potato in butter. Add water and mustard. Cook 15 mins. Puree and stir in heavy cream.",
+            tips: "Use 'Groninger' mustard for the best visible seeds and spicy kick." 
+        },
+        { 
+            name: "Chickpea & Sweet Potato", 
+            img: "chickpea_sweet_potato.png",
+            pairing: "Cashew & Walnut Bread", 
+            ingredients: ["400g chickpeas", "300g sweet potatoes", "1/2 red pepper", "1L veg stock", "Lime juice"], 
+            instructions: "Simmer all ingredients for 20 mins. Puree smooth. Finish with lime and cilantro.",
+            tips: "Naturally thickens without flour or cream thanks to the potato starch." 
+        },
+        { 
+            name: "Roasted Tomato Soup", 
+            img: "roasted_tomato.png",
+            pairing: "Basic White (Grilled Cheese) or Pizza Dough", 
+            ingredients: ["600g tomatoes", "1 onion", "1 red pepper", "3 tbsp balsamic", "Tomato puree", "800ml stock", "Basil"], 
+            instructions: "Sauté veg, deglaze with balsamic, add tomatoes/stock. Simmer 15 mins and blend with basil.",
+            tips: "Balsamic vinegar balances the tomatoes' natural sweetness perfectly." 
+        }
     ];
 
-    let currentView = 'bread';
-
     function changeView(view) {
-        currentView = view;
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.getElementById(`tab-${view}`).classList.add('active');
+        
         const container = document.getElementById('main-content');
         const title = document.getElementById('view-title');
         container.innerHTML = "";
 
         if(view === 'search') {
             title.innerText = "Global Search";
-            container.innerHTML = `<input type="text" id="sq" placeholder="Search recipe..."><button class="card search-card" style="width:100%" onclick="doSearch()">🔍 Click to Search</button><div id="search-res"></div>`;
+            container.innerHTML = `<input type="text" id="sq" placeholder="Search recipe..."><button class="card" style="width:100%; border:none; background:var(--search-color); color:white;" onclick="doSearch()">🔍 Start Search</button><div id="search-res"></div>`;
         } else if(view === 'bread') {
-            title.innerText = "Machine Bread";
-            renderCards(BREAD_DB.filter(b => b.machine), container, 'bread');
+            title.innerText = "Panasonic Machine";
+            renderCards(BREAD_DB, container, 'bread');
         } else if(view === 'general') {
             title.innerText = "General Bread";
-            container.innerHTML = `<div class="info-blok">No general bread recipes added yet. Coming soon!</div>`;
+            container.innerHTML = `<div class="info-blok">No general recipes yet. Add your favorite sourdough or hand-kneaded recipes here in the future!</div>`;
         } else if(view === 'soup') {
             title.innerText = "Healthy Soups";
             renderCards(SOUP_DB, container, 'soup');
@@ -172,10 +231,10 @@
             card.className = `card ${type === 'soup' ? 'soup-card' : ''}`;
             card.onclick = () => renderDetail(type, r);
             card.innerHTML = `
-                <div class="tag ${type === 'soup' ? 'tag-soup' : 'tag-machine'}">${type === 'soup' ? 'Soup' : 'Panasonic Machine'}</div>
+                <div class="tag ${type === 'soup' ? 'tag-soup' : 'tag-machine'}">${type === 'soup' ? '🥣 Soup' : '📟 Machine'}</div>
                 <div style="display:flex; align-items:center;">
                     <div style="flex:1"><b>${r.name}</b></div>
-                    <span>➜</span>
+                    <span style="color:#ccc">➜</span>
                 </div>
             `;
             container.appendChild(card);
@@ -184,17 +243,86 @@
 
     function renderDetail(type, r) {
         const container = document.getElementById('main-content');
+        const badgeClass = type === 'bread' ? 'pairing-badge' : 'pairing-badge soup-theme';
+        const icon = type === 'bread' ? '🥣' : '🥖';
+        const label = type === 'bread' ? 'Best with:' : 'Serve with:';
+        let pairingHtml = r.pairing && r.pairing !== "None" ? `<div class="${badgeClass}">${icon} ${label} ${r.pairing}</div>` : '';
+
         container.innerHTML = `
-            <button onclick="changeView('${type}')" style="border:none; background:none; color:var(--soup-color); cursor:pointer; margin-bottom:10px;">⬅ Back to list</button>
+            <button onclick="changeView('${type}')" style="border:none; background:none; color:var(--soup-color); font-weight:bold; margin-bottom:15px; cursor:pointer;">⬅ Back to list</button>
+            ${pairingHtml}
             <img src="${r.img || ''}" class="hoofd-img" onerror="this.style.display='none'">
             <h2>${r.name}</h2>
-            <div class="info-blok"><b>Ingredients:</b><ul>${r.ingredients.map(i => `<li>${i}</li>`).join('')}</ul></div>
-            ${r.instructions ? `<div class="info-blok"><b>Instructions:</b><br>${r.instructions}</div>` : ''}
-            <div class="pro-tip"><b>Expert Tip:</b><br>${r.tips}</div>
+            ${r.program ? `<div class="info-blok"><h4>Program</h4>${r.program}</div>` : ''}
+            <div class="info-blok"><h4>Ingredients</h4><ul>${r.ingredients.map(i => `<li>${i}</li>`).join('')}</ul></div>
+            ${r.instructions ? `<div class="info-blok"><h4>Method</h4><p>${r.instructions}</p></div>` : ''}
+            <div class="pro-tip"><h4>Expert Tip</h4>${r.tips}</div>
         `;
+        container.scrollTo(0,0);
     }
 
-    // Init display
+    async function doSearch() {
+        const q = document.getElementById('sq').value || 'bread';
+        const resDiv = document.getElementById('search-res');
+        resDiv.innerHTML = "<p>Searching...</p>";
+        try {
+            const res = await fetch(`https://api.spoonacular.com/recipes/complexSearch?query=${q}&number=10&apiKey=${API_KEY}`);
+            const data = await res.json();
+            resDiv.innerHTML = data.results.map(r => `
+                <div class="card" style="border-left-color:var(--search-color)" onclick="fetchSDetail(${r.id})">
+                    <div style="display:flex; align-items:center;">
+                        <img src="${r.image}" style="width:40px; height:40px; border-radius:5px; margin-right:10px;">
+                        <b>${r.title}</b>
+                    </div>
+                </div>`).join('');
+        } catch (e) { resDiv.innerHTML = "API limit reached or error."; }
+    }
+
+    async function fetchSDetail(id) {
+        const container = document.getElementById('main-content');
+        container.innerHTML = "<p>Loading...</p>";
+        try {
+            const res = await fetch(`https://api.spoonacular.com/recipes/${id}/information?apiKey=${API_KEY}`);
+            const r = await res.json();
+            renderDetail('search', {
+                name: r.title,
+                img: r.image,
+                ingredients: r.extendedIngredients.map(i => i.original),
+                instructions: r.instructions,
+                tips: "Recipe fetched from Global Search."
+            });
+        } catch (e) { container.innerHTML = "Error loading details."; }
+    }
+
+    function renderTimer() {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.getElementById('tab-timer').classList.add('active');
+        const container = document.getElementById('main-content');
+        container.innerHTML = `
+            <h2>Machine Timer</h2>
+            <div class="info-blok">
+                <h4>Current Time</h4>
+                <input type="time" id="t-nu">
+                <h4>Ready at</h4>
+                <input type="time" id="t-klaar">
+                <button class="card" style="width:100%; border:none; background:var(--dark); color:white;" onclick="calc()">Calculate Delay</button>
+            </div>
+            <div id="t-res" class="info-blok" style="display:none; text-align:center; font-size:1.8em; background:#e8f5e9;"></div>
+        `;
+        document.getElementById('t-nu').value = new Date().toTimeString().slice(0,5);
+    }
+
+    function calc() {
+        const n = document.getElementById('t-nu').value.split(':'), k = document.getElementById('t-klaar').value.split(':');
+        let d1 = new Date(0,0,0,n[0],n[1]), d2 = new Date(0,0,0,k[0],k[1]);
+        if (d2 <= d1) d2.setDate(d2.getDate() + 1);
+        let diff = d2 - d1, h = Math.floor(diff/3600000), m = Math.floor((diff%3600000)/60000);
+        const res = document.getElementById('t-res');
+        res.style.display = "block";
+        res.innerHTML = `Set to: <b>${h}:${m.toString().padStart(2,'0')}</b>`;
+    }
+
+    // Initialize
     changeView('bread');
 </script>
 </body>
