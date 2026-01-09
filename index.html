@@ -12,33 +12,42 @@
             --soup-theme: #d32f2f;
             --search-theme: #546e7a;
             --bg: #fdf5e6;
-            --glass: rgba(255, 255, 255, 0.96);
+            --glass: rgba(255, 255, 255, 0.98);
         }
 
+        /* Universele Reset */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100dvh; /* Dynamic viewport height voor mobiel */
+            overflow: hidden;
+            background-color: var(--bg);
+        }
+
         body {
             font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background: var(--bg) url('https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=1000') center/cover fixed;
-            margin: 0;
             display: flex;
             justify-content: center;
-            overflow: hidden; /* Voorkomt dubbele scrollbars */
         }
 
+        /* De App Drager */
         .app-shell {
             width: 100%;
             max-width: 500px;
-            height: 100vh;
+            height: 100dvh;
             background: var(--glass);
             backdrop-filter: blur(12px);
             display: flex;
-            flex-direction: column;
-            position: relative;
+            flex-direction: column; /* Zorgt voor de vaste verdeling tussen Header, Main en Nav */
+            box-shadow: 0 0 30px rgba(0,0,0,0.2);
         }
 
         header {
-            padding: 1rem;
+            padding: env(safe-area-inset-top) 1rem 1rem 1rem;
             text-align: center;
             background: white;
             border-bottom: 1px solid #eee;
@@ -46,26 +55,23 @@
             flex-shrink: 0;
         }
 
+        /* Het Schermgedeelte */
         main {
-            flex: 1;
+            flex: 1; /* Neemt alle beschikbare ruimte in tussen header en nav */
             overflow-y: auto;
             padding: 1.2rem;
-            padding-bottom: 100px; /* Ruimte voor de vaste nav */
             -webkit-overflow-scrolling: touch;
         }
 
-        /* Navigatie Fix voor Mobiel (Android/iOS) */
+        /* De Knoppenbalk (Universeel onderaan) */
         nav {
-            position: fixed;
-            bottom: 0;
+            flex-shrink: 0;
             width: 100%;
-            max-width: 500px; /* Match met app-shell */
-            height: 75px;
+            height: calc(70px + env(safe-area-inset-bottom));
             background: white;
             display: flex;
             border-top: 1px solid #eee;
             padding-bottom: env(safe-area-inset-bottom);
-            z-index: 1000;
         }
 
         .nav-btn {
@@ -79,12 +85,13 @@
             cursor: pointer;
             border: none;
             background: none;
+            transition: color 0.2s;
         }
 
         .nav-btn.active { color: var(--primary); font-weight: bold; }
         .nav-btn span { font-size: 1.4rem; margin-bottom: 2px; }
 
-        /* Kaarten en Content */
+        /* Kaarten & Content styling */
         .card {
             background: white;
             border-radius: 12px;
@@ -92,8 +99,8 @@
             margin-bottom: 1rem;
             border-left: 6px solid var(--primary);
             box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            text-align: left;
         }
-
         .card.soup { border-left-color: var(--soup-theme); }
 
         .img-hero {
@@ -111,23 +118,24 @@
             border-radius: 10px;
             margin-bottom: 1rem;
             border: 1px solid #eee;
+            font-size: 0.95rem;
         }
 
-        .tag-badge {
-            display: inline-block;
+        .pro-tip {
             background: #fff3e0;
-            color: #e65100;
-            padding: 4px 8px;
-            border-radius: 5px;
-            font-size: 0.7rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
+            border-left: 4px solid var(--accent);
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
         }
 
         input {
             width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ddd;
             margin-bottom: 1rem; font-size: 1rem;
         }
+        ul { padding-left: 20px; }
+        li { margin-bottom: 5px; }
     </style>
 </head>
 <body>
@@ -135,14 +143,15 @@
 <div class="app-shell">
     <header id="view-title">Bread & Soup Partner</header>
     
-    <main id="app-view"></main>
+    <main id="app-view">
+        </main>
 
     <nav>
         <button class="nav-btn" onclick="navigate('search')"><span>🌍</span>Search</button>
-        <button class="nav-btn active" onclick="navigate('bread')"><span>📟</span>Machine</button>
-        <button class="nav-btn" onclick="navigate('general')"><span>🥖</span>General</button>
-        <button class="nav-btn" onclick="navigate('soup')"><span>🥣</span>Soup</button>
-        <button class="nav-btn" onclick="navigate('timer')"><span>⏰</span>Timer</button>
+        <button class="nav-btn active" onclick="navigate('bread')" id="btn-bread"><span>📟</span>Machine</button>
+        <button class="nav-btn" onclick="navigate('general')" id="btn-general"><span>🥖</span>General</button>
+        <button class="nav-btn" onclick="navigate('soup')" id="btn-soup"><span>🥣</span>Soup</button>
+        <button class="nav-btn" onclick="navigate('timer')" id="btn-timer"><span>⏰</span>Timer</button>
     </nav>
 </div>
 
@@ -150,29 +159,29 @@
     const API_KEY = "2386c821382b4094a3045c9c6ffd588d";
 
     const BREAD_DB = [
-        { name: "Basic White Bread (Classic)", img: "witbrood.png", program: "Basic (Menu 1)", ingredients: ["1 tsp yeast", "500g bread flour", "30g butter", "1.5 tbsp sugar", "1.5 tsp salt", "340ml water"], toppings: "None", tips: "Use high protein flour (12%+) for the best rise. Perfect for sandwiches." },
-        { name: "Potato Rosemary Bread", img: "aardappelbrood.png", program: "Basic (Menu 1)", ingredients: ["1 tsp yeast", "400g spelt flour", "10g butter", "¾ tsp sugar", "1¾ tsp salt", "150g mashed potatoes", "2 tbsp rosemary", "150ml water"], toppings: "Fresh rosemary and coarse salt", tips: "Potatoes make the crumb exceptionally soft. Best with Spicy Carrot Soup." },
-        { name: "Cashew & Walnut Bread", img: "notenbrood.png", program: "Basic Raisin (Menu 3)", ingredients: ["1 tsp yeast", "400g flour", "10g butter", "10g sesame", "280ml water", "150g mixed nuts"], toppings: "Extra sesame seeds", tips: "Add nuts only at the beep to keep them crunchy." },
-        { name: "Crispy Herb Bread (Oven)", img: "frans_stokbrood.png", program: "Dough (Menu 17) + Oven", ingredients: ["1 tbsp yeast", "500g flour", "1 tbsp salt", "Rosemary & Thyme", "260ml lukewarm water"], toppings: "Olive oil and herbs", tips: "Bake at 230°C in the oven with steam for a professional crust." },
-        { name: "Brioche (Classic)", img: "brioche_brood.png", program: "Brioche (Menu 10)", ingredients: ["1.25 tsp yeast", "400g flour", "50g sugar", "60g butter", "2 eggs + water (270ml)", "80g extra cold butter"], toppings: "Egg wash for shine", tips: "Add cold butter cubes after the 55-min beep." },
+        { name: "Basic White Bread (Classic)", img: "witbrood.png", program: "Basic (Menu 1)", ingredients: ["1 tsp yeast", "500g bread flour", "30g butter", "1.5 tbsp sugar", "1.5 tsp salt", "340ml water"], toppings: "None", tips: "Use high protein flour (12%+) for the best rise." },
+        { name: "Potato Rosemary Bread", img: "aardappelbrood.png", program: "Basic (Menu 1)", ingredients: ["1 tsp yeast", "400g spelt flour", "10g butter", "¾ tsp sugar", "1¾ tsp salt", "150g mashed potatoes", "2 tbsp rosemary", "150ml water"], toppings: "Fresh rosemary & sea salt", tips: "Potatoes keep the crumb soft for days." },
+        { name: "Cashew & Walnut Bread", img: "notenbrood.png", program: "Basic Raisin (Menu 3)", ingredients: ["1 tsp yeast", "400g flour", "10g butter", "10g sesame", "280ml water", "150g mixed nuts"], toppings: "Sesame seeds", tips: "Add nuts at the beep to keep them chunky." },
+        { name: "Crispy Herb Bread (Oven)", img: "frans_stokbrood.png", program: "Dough (Menu 17) + Oven", ingredients: ["1 tbsp yeast", "500g flour", "1 tbsp salt", "Rosemary & Thyme", "260ml lukewarm water"], toppings: "Olive oil and herbs", tips: "Machine kneads; shape and bake in the oven at 230°C." },
+        { name: "Brioche (Classic)", img: "brioche_brood.png", program: "Brioche (Menu 10)", ingredients: ["1.25 tsp yeast", "400g flour", "50g sugar", "60g butter", "2 eggs", "80g extra cold butter"], toppings: "None", tips: "Add cold butter cubes after the 55-min beep." },
         { name: "Focaccia", img: "focaccia_brood.png", program: "Dough (Menu 23/24)", ingredients: ["0.5 tsp yeast", "300g flour", "1 tbsp olive oil", "1 tsp salt", "170ml water"], toppings: "Sea salt and rosemary", tips: "Press deep dimples into the dough before adding oil." },
-        { name: "Whole Wheat", img: "volkorenbrood.png", program: "Whole Wheat (Menu 7)", ingredients: ["1 tsp yeast", "400g whole wheat flour", "20g butter", "1 tbsp sugar", "280ml water"], toppings: "Oats or sunflower seeds", tips: "The long soak in Menu 7 is vital for whole grains." },
-        { name: "French Bread", img: "frans_stokbrood.png", program: "French (Menu 11)", ingredients: ["1 tsp yeast", "400g white flour", "1.5 tsp salt", "290ml water"], toppings: "Flour dusting", tips: "6-hour cycle. No fat/sugar; pure flour flavor." },
-        { name: "Christmas Gingerbread", img: "brioche_brood.png", program: "Cake (Menu 15)", ingredients: ["40ml oil", "3 ripe bananas", "170g flour", "2 eggs", "100g dates", "Gingerbread spices"], toppings: "Walnut halves", tips: "Scrape the sides of the pan after 2 mins of mixing." },
-        { name: "Panettone Style", img: "panettone.png", program: "Basic Raisin (Menu 3)", ingredients: ["7g yeast", "500g flour", "100g butter", "250ml milk", "1 egg + 2 yolks", "350g dried fruit"], toppings: "Powdered sugar", tips: "Use 'Light Crust' setting to protect sugar content." },
-        { name: "Pizza Dough", img: "pizza_deeg.png", program: "Pizza (Menu 23)", ingredients: ["1 tsp yeast", "450g flour", "4 tbsp oil", "240ml water"], toppings: "Semolina for dusting", tips: "Roll thin and bake at 220°C on a preheated tray." },
-        { name: "Protein Bread (S)", img: "proteine.png", program: "Whole Wheat (Menu 5)", ingredients: ["¾ tsp yeast", "291g flour", "128g cottage cheese", "125g egg whites", "5g smoked salt"], toppings: "Pumpkin seeds", tips: "Cottage cheese acts as the fat. Very nutritious." },
-        { name: "Strawberry Jam", img: "jam.png", program: "Jam (Menu 21)", ingredients: ["300g strawberries", "200g sugar", "7g pectin"], toppings: "None", tips: "Pour into jars while boiling hot. Store in a cool place." },
-        { name: "Fruit Compote", img: "witbrood.png", program: "Compote (Menu 22)", ingredients: ["400g apples/peren", "2 tbsp sugar", "1 tbsp water"], toppings: "Cinnamon", tips: "Cut fruit into even 2cm cubes for consistent texture." }
+        { name: "Whole Wheat", img: "volkorenbrood.png", program: "Whole Wheat (Menu 7)", ingredients: ["1 tsp yeast", "400g whole wheat flour", "20g butter", "280ml water"], toppings: "None", tips: "Menu 7 provides a long soak for the best texture." },
+        { name: "French Bread", img: "frans_stokbrood.png", program: "French (Menu 11)", ingredients: ["1 tsp yeast", "400g white flour", "1.5 tsp salt", "290ml water"], toppings: "Flour dusting", tips: "6-hour cycle for pure flour flavor and crispy crust." },
+        { name: "Christmas Gingerbread", img: "brioche_brood.png", program: "Cake (Menu 15)", ingredients: ["40ml oil", "3 ripe bananas", "170g flour", "2 eggs", "100g dates", "Spices"], toppings: "Walnut halves", tips: "Scrape the sides of the pan after 2 mins mixing." },
+        { name: "Panettone Style", img: "panettone.png", program: "Basic Raisin (Menu 3)", ingredients: ["7g yeast", "500g flour", "100g butter", "250ml milk", "Dried fruit"], toppings: "Sugar glaze", tips: "Use 'Light Crust' setting to protect the sugars." },
+        { name: "Pizza Dough", img: "pizza_deeg.png", program: "Pizza (Menu 23)", ingredients: ["1 tsp yeast", "450g flour", "4 tbsp oil", "240ml water"], toppings: "Cornmeal", tips: "Roll thin and bake at 220°C." },
+        { name: "Protein Bread (S)", img: "proteine.png", program: "Whole Wheat (Menu 5)", ingredients: ["¾ tsp yeast", "291g flour", "128g cottage cheese", "125g egg whites"], toppings: "None", tips: "Cottage cheese adds protein and keeps it moist." },
+        { name: "Strawberry Jam", img: "jam.png", program: "Jam (Menu 21)", ingredients: ["300g strawberries", "200g sugar", "7g pectin"], toppings: "None", tips: "Pour into jars while boiling hot." },
+        { name: "Fruit Compote", img: "witbrood.png", program: "Compote (Menu 22)", ingredients: ["400g fruit", "2 tbsp sugar", "1 tbsp water"], toppings: "None", tips: "Cut fruit into even 2cm cubes." }
     ];
 
     const SOUP_DB = [
-        { name: "Minestrone (Rich Italian)", img: "minestrone.png", pairing: "Focaccia", ingredients: ["Olive oil", "Onion/Celery/Carrot", "Beans", "Stock", "Pasta", "Parmesan"], instructions: "Sauté veg for 10m. Add stock, beans, and pasta. Simmer until tender. Garnish with basil.", tips: "Use up stale bread by dipping it in. Hearty and rich." },
-        { name: "Spicy Carrot Soup", img: "spicy_carrot.png", pairing: "Potato Rosemary Bread", ingredients: ["650g carrots", "Red onion", "Spices", "Stock", "Yogurt"], instructions: "Toast spices, sauté onion/garlic, simmer carrots in stock for 25m, blend smooth.", tips: "Roasting spices first is essential for flavor depth." },
-        { name: "Creamy Zucchini-Herb", img: "zucchini_herb.png", pairing: "French Bread", ingredients: ["Zucchini", "Spring onions", "Herbs", "Cream cheese"], instructions: "Simmer veg for 15m, blend until vibrant green, stir in cream cheese while hot.", tips: "Zucchini has high water content; use less stock than root soups." },
-        { name: "Creamy Mustard Soup", img: "creamy_mustard.png", pairing: "Basic White Bread", ingredients: ["Leek", "Potatoes", "Mustard", "Cream", "Butter"], instructions: "Fry leek/potato in butter. Simmer with mustard/stock for 15m. Puree and add cream.", tips: "Groninger mustard adds the best visual seed-texture." },
-        { name: "Chickpea & Sweet Potato", img: "chickpea_sweet_potato.png", pairing: "Cashew & Walnut Bread", ingredients: ["Chickpeas", "Sweet potatoes", "Red pepper", "Lime"], instructions: "Simmer all for 20m, puree smooth, finish with lime juice and cilantro.", tips: "Potato starch makes it creamy without dairy." },
-        { name: "Roasted Tomato Soup", img: "roasted_tomato.png", pairing: "Grilled Cheese (Basic White)", ingredients: ["Tomatoes", "Balsamic", "Red pepper", "Basil", "Stock"], instructions: "Sauté veg, deglaze with balsamic, simmer 15m and blend with fresh basil.", tips: "Balsamic vinegar balances the tomato acidity perfectly." }
+        { name: "Minestrone (Rich Italian)", img: "minestrone.png", pairing: "Focaccia", ingredients: ["Onion/Celery/Carrot", "Beans", "Stock", "Pasta"], instructions: "Sauté veg for 10m. Add stock, beans, and pasta. Simmer until tender.", tips: "Perfect with fresh Focaccia." },
+        { name: "Spicy Carrot Soup", img: "spicy_carrot.png", pairing: "Potato Rosemary Bread", ingredients: ["Carrots", "Onion", "Spices", "Stock", "Yogurt"], instructions: "Toast spices, sauté onion, simmer carrots in stock for 25m, blend.", tips: "Roasting spices is essential." },
+        { name: "Creamy Zucchini-Herb", img: "zucchini_herb.png", pairing: "French Bread", ingredients: ["Zucchini", "Spring onion", "Herbs", "Cream cheese"], instructions: "Simmer veg for 15m, blend, stir in cream cheese.", tips: "Use less stock than root soups." },
+        { name: "Creamy Mustard Soup", img: "creamy_mustard.png", pairing: "Basic White Bread", ingredients: ["Leek", "Potatoes", "Mustard", "Cream"], instructions: "Fry leek/potato in butter. Simmer with mustard/stock for 15m. Puree.", tips: "Use coarse Groninger mustard." },
+        { name: "Chickpea & Sweet Potato", img: "chickpea_sweet_potato.png", pairing: "Cashew & Walnut Bread", ingredients: ["Chickpeas", "Sweet potatoes", "Pepper", "Lime"], instructions: "Simmer all for 20m, puree smooth, finish with lime juice.", tips: "Potato starch makes it creamy." },
+        { name: "Roasted Tomato Soup", img: "roasted_tomato.png", pairing: "Basic White (Grilled Cheese)", ingredients: ["Tomatoes", "Balsamic", "Pepper", "Basil"], instructions: "Sauté veg, deglaze with balsamic, simmer 15m, blend.", tips: "Balsamic balances the acidity." }
     ];
 
     const view = document.getElementById('app-view');
@@ -180,26 +189,32 @@
 
     function navigate(target) {
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        event?.currentTarget?.classList.add('active');
+        // Zoek de knop op basis van onclick attribuut als de event niet direct beschikbaar is
+        const activeBtn = document.querySelector(`.nav-btn[onclick="navigate('${target}')"]`);
+        if(activeBtn) activeBtn.classList.add('active');
+
         view.innerHTML = "";
+        view.scrollTo(0,0);
 
         switch(target) {
             case 'search': renderSearch(); break;
             case 'bread': renderList(BREAD_DB, 'bread'); break;
             case 'soup': renderList(SOUP_DB, 'soup'); break;
             case 'timer': renderTimer(); break;
-            case 'general': view.innerHTML = "<div class='info-block'>Coming soon! Prepare your hand-kneaded recipes here.</div>"; break;
+            case 'general': view.innerHTML = "<div class='info-block'>Coming soon! Prepare your hand-kneaded recipes.</div>"; break;
         }
     }
 
     function renderList(db, type) {
-        viewTitle.innerText = type === 'bread' ? "Panasonic Collection" : "Vegetable Soups";
-        db.forEach((item, index) => {
+        viewTitle.innerText = type === 'bread' ? "Panasonic Collection" : "Soup Collection";
+        db.forEach((item) => {
             const card = document.createElement('div');
             card.className = `card ${type === 'soup' ? 'soup' : ''}`;
             card.innerHTML = `
-                <div class="tag-badge">${type === 'bread' ? '📟 Machine' : '🥣 Soup'}</div>
-                <div style="font-weight:bold; display:flex; justify-content:space-between;">${item.name} <span>➜</span></div>
+                <div style="font-weight:bold; display:flex; justify-content:space-between; align-items:center;">
+                    ${item.name} 
+                    <span style="font-size:0.8rem; color:var(--primary);">VIEW ➜</span>
+                </div>
             `;
             card.onclick = () => renderDetail(item, type);
             view.appendChild(card);
@@ -208,30 +223,30 @@
 
     function renderDetail(item, type) {
         view.innerHTML = `
-            <button onclick="navigate('${type}')" style="background:none; border:none; color:#888; margin-bottom:1rem; cursor:pointer;">⬅ Back to list</button>
-            ${item.pairing ? `<div style="background:#f1f8e9; padding:10px; border-radius:8px; margin-bottom:10px; color:#2e7d32; font-weight:bold; font-size:0.85rem;">🥖 Pairs with: ${item.pairing}</div>` : ''}
+            <button onclick="navigate('${type}')" style="background:none; border:none; color:#888; margin-bottom:1rem; padding:10px 0; cursor:pointer; font-weight:bold;">⬅ BACK TO LIST</button>
+            ${item.pairing ? `<div style="background:#f1f8e9; padding:12px; border-radius:8px; margin-bottom:15px; color:#2e7d32; font-weight:bold; font-size:0.85rem;">🥖 PAIRS WITH: ${item.pairing}</div>` : ''}
             <img src="${item.img}" class="img-hero" onerror="this.src='https://via.placeholder.com/450x200?text=${item.name}'">
             <h2 style="margin:0 0 1rem 0;">${item.name}</h2>
             ${item.program ? `<div class="info-block"><strong>Program:</strong> ${item.program}</div>` : ''}
             <div class="info-block"><strong>Ingredients:</strong><ul>${item.ingredients.map(i => `<li>${i}</li>`).join('')}</ul></div>
             ${item.toppings ? `<div class="info-block"><strong>Toppings:</strong> ${item.toppings}</div>` : ''}
-            ${item.instructions ? `<div class="info-block"><strong>Instructions:</strong><br>${item.instructions}</div>` : ''}
-            <div style="background:#fff3e0; border-left:4px solid var(--accent); padding:1rem; border-radius:8px; font-size:0.9rem;"><strong>Expert Tips:</strong><br>${item.tips}</div>
+            ${item.instructions ? `<div class="info-block"><strong>Method:</strong><br>${item.instructions}</div>` : ''}
+            <div class="pro-tip"><strong>Pro Tips:</strong><br>${item.tips}</div>
         `;
         view.scrollTo(0,0);
     }
 
     function renderTimer() {
-        viewTitle.innerText = "Panasonic Timer";
+        viewTitle.innerText = "Machine Timer";
         view.innerHTML = `
             <div class="info-block">
-                <label>Current Time:</label>
+                <p>Huidige Tijd:</p>
                 <input type="time" id="t1" value="${new Date().toTimeString().slice(0,5)}">
-                <label>Ready At:</label>
+                <p>Klaar Om:</p>
                 <input type="time" id="t2">
-                <button class="card" style="width:100%; background:var(--dark); color:white; border:none; padding:15px;" onclick="calculate()">Calculate Delay</button>
+                <button class="card" style="width:100%; background:var(--dark); color:white; border:none; margin-top:10px; padding:15px;" onclick="calculate()">CALCULATE DELAY</button>
             </div>
-            <div id="res" class="info-block" style="display:none; text-align:center; font-size:1.8rem; background:#e8f5e9;"></div>
+            <div id="res" class="info-block" style="display:none; text-align:center; font-size:1.8rem; background:#e8f5e9; border-color:#c8e6c9;"></div>
         `;
     }
 
@@ -247,22 +262,26 @@
 
     function renderSearch() {
         viewTitle.innerText = "Global Search";
-        view.innerHTML = `<input type="text" id="qs" placeholder="Search world recipes..."><button class="card" style="width:100%; background:var(--search-theme); color:white; border:none; padding:15px;" onclick="apiSearch()">🔍 Search Online</button><div id="api-res"></div>`;
+        view.innerHTML = `
+            <input type="text" id="qs" placeholder="Search world recipes...">
+            <button class="card" style="width:100%; background:var(--search-theme); color:white; border:none; padding:15px;" onclick="apiSearch()">🔍 SEARCH ONLINE</button>
+            <div id="api-res"></div>
+        `;
     }
 
     async function apiSearch() {
         const q = document.getElementById('qs').value || 'bread';
         const resDiv = document.getElementById('api-res');
-        resDiv.innerHTML = "Loading...";
+        resDiv.innerHTML = "Searching...";
         try {
             const r = await fetch(`https://api.spoonacular.com/recipes/complexSearch?query=${q}&number=8&apiKey=${API_KEY}`);
             const data = await r.json();
             resDiv.innerHTML = data.results.map(i => `<div class="card" onclick="fetchApiDetail(${i.id})"><b>${i.title}</b></div>`).join('');
-        } catch(e) { resDiv.innerHTML = "Error or API limit reached."; }
+        } catch(e) { resDiv.innerHTML = "API limit reached."; }
     }
 
     async function fetchApiDetail(id) {
-        view.innerHTML = "Loading details...";
+        view.innerHTML = "Loading...";
         const r = await fetch(`https://api.spoonacular.com/recipes/${id}/information?apiKey=${API_KEY}`);
         const data = await r.json();
         renderDetail({
@@ -270,10 +289,11 @@
             img: data.image,
             ingredients: data.extendedIngredients.map(i => i.original),
             instructions: data.instructions,
-            tips: "Fetched via Spoonacular."
+            tips: "External source."
         }, 'search');
     }
 
+    // Start de app op de broodlijst
     navigate('bread');
 </script>
 </body>
