@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Bread & Soup Specialist Pro</title>
+    <title>Bread & Soup Specialist Master</title>
     <style>
         :root {
             --primary: #8d6e63;
@@ -19,8 +19,8 @@
         body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg) url('https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=1000') center/cover fixed; display: flex; justify-content: center; }
         .app-shell { width: 100%; max-width: 500px; height: 100dvh; background: var(--glass); backdrop-filter: blur(12px); display: flex; flex-direction: column; box-shadow: 0 0 30px rgba(0,0,0,0.2); }
         header { padding: env(safe-area-inset-top) 1rem 1rem 1rem; text-align: center; background: white; border-bottom: 1px solid #eee; font-weight: bold; flex-shrink: 0; }
-        main { flex: 1; overflow-y: auto; padding: 1.2rem; -webkit-overflow-scrolling: touch; }
-        nav { flex-shrink: 0; width: 100%; height: calc(75px + env(safe-area-inset-bottom)); background: white; display: flex; border-top: 1px solid #eee; padding-bottom: env(safe-area-inset-bottom); }
+        main { flex: 1; overflow-y: auto; padding: 1.2rem; padding-bottom: 90px; -webkit-overflow-scrolling: touch; }
+        nav { position: absolute; bottom: 0; width: 100%; height: calc(75px + env(safe-area-inset-bottom)); background: white; display: flex; border-top: 1px solid #eee; padding-bottom: env(safe-area-inset-bottom); z-index: 10; }
         .nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.7rem; color: #888; cursor: pointer; border: none; background: none; }
         .nav-btn.active { color: var(--primary); font-weight: bold; }
         .nav-btn span { font-size: 1.4rem; margin-bottom: 2px; }
@@ -31,14 +31,14 @@
         .info-block { background: #fafafa; padding: 1rem; border-radius: 10px; margin-bottom: 1rem; border: 1px solid #eee; font-size: 0.95rem; line-height: 1.6; }
         .pro-tip { background: #fff3e0; border-left: 4px solid var(--accent); padding: 1rem; border-radius: 8px; font-size: 0.9rem; margin-bottom: 1rem; }
         input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ddd; margin-bottom: 1rem; font-size: 1rem; }
-        ul { padding-left: 20px; }
-        li { margin-bottom: 5px; }
+        ol, ul { padding-left: 1.2rem; margin: 0.5rem 0; }
+        li { margin-bottom: 0.5rem; }
     </style>
 </head>
 <body>
 
 <div class="app-shell">
-    <header id="view-title">Bread & Soup Master</header>
+    <header id="view-title">Bread & Soup Specialist</header>
     <main id="app-view"></main>
     <nav>
         <button class="nav-btn" onclick="navigate('search')"><span>🌍</span>Search</button>
@@ -53,41 +53,264 @@
     const API_KEY = "2386c821382b4094a3045c9c6ffd588d";
 
     const MACHINE_DB = [
-        { name: "Basic White Bread", img: "witbrood.png", program: "Basic (Menu 1)", pairing: "Hearty Vegetable Beef Soup", ingredients: ["1 tsp dry yeast", "500g strong white bread flour", "30g butter", "1.5 tbsp sugar", "1.5 tsp salt", "340ml water"], toppings: "None", instructions: "1. Place yeast at the bottom of the pan. 2. Cover with flour. 3. Add butter, sugar, and salt. 4. Pour water around the flour. 5. Select Menu 1, Medium crust.", tips: "Use high protein bread flour (12%+) for the best rise." },
-        { name: "Potato Rosemary Bread", img: "aardappelbrood.png", program: "Basic (Menu 1)", pairing: "Chicken Pot Pie Soup", ingredients: ["1 tsp yeast", "400g spelt flour", "10g butter", "¾ tsp sugar", "1¾ tsp salt", "150g cold mashed potatoes", "2 tbsp rosemary", "150ml water"], toppings: "Fresh rosemary & sea salt", instructions: "1. Mash potatoes without extras and cool completely. 2. Place yeast in pan. 3. Cover with dry ingredients. 4. Add potato and water. 5. Run Menu 1.", tips: "Potato bread is moisture-rich; wait 1 hour before slicing." },
-        { name: "Brioche (Classic)", img: "brioche_brood.png", program: "Brioche (Menu 10)", pairing: "Roasted Tomato Soup", ingredients: ["1.25 tsp yeast", "400g flour", "50g sugar", "1.5 tsp salt", "60g butter (cubed)", "2 eggs", "80g extra ice-cold butter (cubed)"], toppings: "None", instructions: "1. Start Menu 10 with the first batch of butter. 2. When the machine beeps (~55 mins), add the extra 80g cold butter cubes. 3. Select 'Light' crust.", tips: "Cold extra butter cubes are essential for the rich texture." },
-        { name: "French Bread", img: "frans_stokbrood.png", program: "French (Menu 11)", pairing: "Dutch Brown Bean Soup", ingredients: ["1 tsp yeast", "400g white flour", "1.5 tsp salt", "290ml water"], toppings: "None", instructions: "1. Layer yeast, flour, salt, and water. 2. Run Menu 11. This is a 6-hour cycle.", tips: "Contains no fat or sugar, resulting in an authentic crispy crust." },
-        { name: "Whole Wheat", img: "volkorenbrood.png", program: "Whole Wheat (Menu 7)", pairing: "Lentil & Bacon Soup", ingredients: ["1 tsp yeast", "400g whole wheat flour", "20g butter", "1 tbsp sugar", "1.5 tsp salt", "280ml water"], toppings: "Optional: Sunflower seeds", instructions: "1. Run Menu 7. The machine will rest to soften the bran. 2. Use 'Dark' crust for better flavor.", tips: "Result is dense and highly nutritious." },
-        { name: "Pizza Dough", img: "pizza_deeg.png", program: "Pizza (Menu 23)", pairing: "Roasted Tomato Soup", ingredients: ["1 tsp yeast", "450g flour", "4 tbsp oil", "2 tsp salt", "240ml water"], toppings: "None", instructions: "1. Run Menu 23 (45 mins). 2. Roll out on a tray with semolina. 3. Bake at 220°C.", tips: "Rest dough for 10 mins before rolling for easier handling." },
-        { name: "Protein Bread (S)", img: "proteine.png", program: "Whole Wheat (Menu 5)", pairing: "Creamy Zucchini-Herb Soup", ingredients: ["¾ tsp yeast", "291g flour", "128g cottage cheese", "125g egg whites", "38g water", "5g smoked salt"], toppings: "Pumpkin seeds", instructions: "1. Add liquids (cottage cheese/egg whites/water) first. 2. Add flour and yeast. 3. Run Menu 5.", tips: "Very moist bread; cottage cheese acts as the fat substitute." },
-        { name: "Cashew & Walnut Bread", img: "notenbrood.png", program: "Basic Raisin (Menu 3)", ingredients: ["1 tsp yeast", "400g flour", "10g butter", "10g sesame", "280ml water", "150g mixed nuts"], toppings: "Sesame seeds", instructions: "1. Place dry ingredients in pan. 2. Add nuts to the dispenser or add when the machine beeps.", tips: "Briefly toast nuts before adding for a deeper aroma." },
-        { name: "Focaccia", img: "focaccia_brood.png", program: "Dough (Menu 23/24)", pairing: "Minestrone", ingredients: ["0.5 tsp yeast", "300g flour", "1 tbsp olive oil", "1 tsp salt", "170ml water"], toppings: "Rosemary & Sea salt", instructions: "1. Run dough cycle. 2. Press into oiled tray. 3. Dimple deeply with fingers. 4. Rise 30m, bake 200°C.", tips: "Drizzle generously with olive oil before baking." },
-        { name: "Christmas Gingerbread", img: "brioche_brood.png", program: "Cake (Menu 15)", pairing: "Spicy Carrot Soup", ingredients: ["40ml oil", "3 ripe bananas", "170g flour", "2 eggs", "50g molasses", "100g dates", "1 tsp soda", "Spices"], toppings: "Walnut halves", instructions: "1. Mix wet ingredients first. 2. Run Menu 15. 3. Scrape pan edges after 2 mins mixing.", tips: "Great for dessert or a sweet/savory soup pairing." },
-        { name: "Panettone Style", img: "panettone.png", program: "Basic Raisin (Menu 3)", ingredients: ["7g yeast", "500g flour", "100g butter", "250ml milk", "1 egg + 2 yolks", "350g dried fruit"], toppings: "Sugar glaze", instructions: "1. Add fruit at the beep. 2. Use 'Light' crust setting to avoid burning the sugars.", tips: "Rich dough; ensure yeast is fresh." },
-        { name: "Crispy Herb Bread", img: "frans_stokbrood.png", program: "Dough (Menu 17) + Oven", ingredients: ["1 tbsp yeast", "500g flour", "1 tbsp salt", "Herbs", "260ml water"], toppings: "Olive oil and herbs", instructions: "1. Machine kneads. 2. Remove, shape into oval. 3. Rise 45m. 4. Bake 230°C with steam.", tips: "Spray oven with water for crusty professional finish." },
-        { name: "Strawberry Jam", img: "jam.png", program: "Jam (Menu 21)", ingredients: ["300g strawberries", "200g sugar", "7g pectin"], toppings: "None", instructions: "1. Chop fruit. 2. Place in pan with sugar/pectin. 3. Run Menu 21. 4. Jar while boiling hot.", tips: "Sterilize jars beforehand." },
-        { name: "Fruit Compote", img: "witbrood.png", program: "Compote (Menu 22)", ingredients: ["400g fruit", "2 tbsp sugar", "1 tbsp water"], toppings: "None", instructions: "1. Cut fruit into 2cm cubes. 2. Run Menu 22. 3. Perfect for yogurt topping.", tips: "Do not over-mash fruit before starting." }
+        { 
+            name: "Basic White Bread", 
+            img: "witbrood.png", 
+            pairing: "Hearty Vegetable Beef Soup", 
+            ingredients: ["1 tsp dry yeast", "500g strong white bread flour", "30g butter", "1.5 tbsp sugar", "1.5 tsp salt", "340ml water"], 
+            instructions: ["Place yeast at the bottom of the pan.", "Cover with flour.", "Add butter, sugar, and salt.", "Pour water around the flour.", "Select Menu 1, Medium crust.", "Cool on a wire rack."], 
+            tips: "Perfect for beginners. Use flour with at least 12% protein for best results." 
+        },
+        { 
+            name: "Potato Rosemary Bread", 
+            img: "aardappelbrood.png", 
+            pairing: "Chicken Pot Pie Soup", 
+            ingredients: ["1 tsp yeast", "400g spelt flour", "10g butter", "¾ tsp sugar", "1¾ tsp salt", "150g mashed potatoes (boiled & cooled)", "2 tbsp fresh rosemary (finely chopped)", "150ml water"], 
+            instructions: ["Mash potatoes without milk/butter and let cool.", "Place yeast in the bread pan.", "Add flour, sugar, and salt.", "Add the mashed potatoes, rosemary, and water.", "Start Menu 1."], 
+            tips: "The potato keeps the bread incredibly soft for several days." 
+        },
+        { 
+            name: "Brioche (Classic)", 
+            img: "brioche_brood.png", 
+            pairing: "Roasted Tomato Soup", 
+            ingredients: ["1.25 tsp yeast", "400g flour", "50g sugar", "1.5 tsp salt", "60g butter (cubed)", "2 eggs", "80g extra ice-cold butter (cubed)"], 
+            instructions: ["Start Menu 10 with the first batch of butter.", "Cut the extra 80g butter into 1cm cubes and keep in the fridge.", "When the machine beeps (~55 mins), add the cold butter cubes.", "Select Light crust to prevent burning."], 
+            tips: "Ice-cold butter cubes for the second stage are vital for texture." 
+        },
+        { 
+            name: "French Bread", 
+            img: "frans_stokbrood.png", 
+            pairing: "Dutch Brown Bean Soup", 
+            ingredients: ["1 tsp yeast", "400g white flour", "1.5 tsp salt", "290ml water"], 
+            instructions: ["Place ingredients in the pan starting with yeast.", "Select Menu 11.", "This is a 6-hour cycle that develops flavor naturally."], 
+            tips: "Contains no fat or sugar, resulting in a thin, crispy crust." 
+        },
+        { 
+            name: "Whole Wheat", 
+            img: "volkorenbrood.png", 
+            pairing: "Lentil & Bacon Soup", 
+            ingredients: ["1 tsp yeast", "400g whole wheat flour", "20g butter", "1 tbsp sugar", "1.5 tsp salt", "280ml water"], 
+            instructions: ["Add ingredients to the pan.", "Select Menu 7.", "The machine includes a rest period to hydrate the bran."], 
+            tips: "The longer rest period ensures the whole wheat isn't too dense." 
+        },
+        { 
+            name: "Pizza Dough", 
+            img: "pizza_deeg.png", 
+            pairing: "Roasted Tomato Soup", 
+            ingredients: ["1 tsp yeast", "450g flour", "4 tbsp oil", "2 tsp salt", "240ml water"], 
+            instructions: ["Run Menu 23 (45 mins).", "Roll out on a tray dusted with semolina.", "Bake at 220°C until edges are golden."], 
+            tips: "Let the dough rest for 10 mins after the cycle for easier rolling." 
+        },
+        { 
+            name: "Protein Bread (S)", 
+            img: "proteine.png", 
+            pairing: "Creamy Zucchini-Herb Soup", 
+            ingredients: ["¾ tsp yeast", "291g flour", "128g cottage cheese", "125g egg whites", "38g water", "5g smoked salt"], 
+            instructions: ["Add liquid ingredients (egg whites, cottage cheese, water) first.", "Add dry ingredients and yeast.", "Run Menu 5."], 
+            tips: "Small loaf; cottage cheese provides protein and moisture." 
+        },
+        { 
+            name: "Cashew & Walnut Bread", 
+            img: "notenbrood.png", 
+            pairing: "Chickpea & Sweet Potato Soup", 
+            ingredients: ["1 tsp yeast", "400g flour", "10g butter", "10g sesame", "280ml water", "150g mixed nuts"], 
+            instructions: ["Place yeast, flour, and butter in pan.", "Add nuts to the dispenser or at the beep.", "Select Menu 3 (Raisin)."], 
+            tips: "Toast the nuts briefly for a much deeper flavor." 
+        },
+        { 
+            name: "Focaccia (Machine)", 
+            img: "focaccia_brood.png", 
+            pairing: "Minestrone", 
+            ingredients: ["0.5 tsp yeast", "300g flour", "1 tbsp olive oil", "1 tsp salt", "170ml water"], 
+            instructions: ["Run dough cycle.", "Remove and press into an oiled baking tray.", "Dimple the surface with fingers.", "Rise for 30 mins, then bake at 200°C."], 
+            tips: "Press dimples deep so the oil pools inside them." 
+        },
+        { 
+            name: "Christmas Gingerbread", 
+            img: "brioche_brood.png", 
+            pairing: "Spicy Carrot Soup", 
+            ingredients: ["3 ripe bananas", "170g flour", "2 eggs", "40ml oil", "100g dates", "50g molasses", "Gingerbread spices"], 
+            instructions: ["Mix wet ingredients together.", "Add dry ingredients.", "Run Menu 15 (Cake).", "Scrape the sides of the pan after 2 mins mixing."], 
+            tips: "Great as a sweet-savory pairing with spicy soups." 
+        },
+        { 
+            name: "Panettone Style", 
+            img: "panettone.png", 
+            pairing: "None", 
+            ingredients: ["7g yeast", "500g flour", "100g butter", "250ml milk", "1 egg + 2 yolks", "350g dried fruit"], 
+            instructions: ["Warm milk/butter slightly.", "Add all except fruit to pan.", "Add fruit at the beep.", "Select Menu 3, Light crust."], 
+            tips: "Rich dough; ensure yeast is fresh." 
+        },
+        { 
+            name: "Crispy Herb Bread", 
+            img: "frans_stokbrood.png", 
+            pairing: "Hearty Vegetable Beef Soup", 
+            ingredients: ["1 tbsp yeast", "500g flour", "1 tbsp salt", "Rosemary & Thyme", "260ml water"], 
+            instructions: ["Run dough cycle in machine.", "Shape into an oval boule.", "Rise for 45 mins.", "Bake at 230°C with steam."], 
+            tips: "Steam is the secret to a professional crust." 
+        },
+        { 
+            name: "Strawberry Jam", 
+            img: "jam.png", 
+            pairing: "None", 
+            ingredients: ["300g strawberries", "200g sugar", "7g pectin"], 
+            instructions: ["Chop fruit small.", "Place in pan with sugar and pectin.", "Run Menu 21.", "Jar while boiling hot."], 
+            tips: "Remove kneading blade if your model requires it." 
+        },
+        { 
+            name: "Fruit Compote", 
+            img: "witbrood.png", 
+            pairing: "None", 
+            ingredients: ["400g fruit", "2 tbsp sugar", "1 tbsp water"], 
+            instructions: ["Cut fruit into equal 2cm cubes.", "Run Menu 22.", "Perfect for topping yogurt."], 
+            tips: "Try with a mix of apple and pear." 
+        }
     ];
 
     const GENERAL_DB = [
-        { name: "Classic White Artisan Loaf", img: "classic_white_artisan_loaf.png", program: "Oven (Manual)", ingredients: ["500g bread flour", "300ml lukewarm water", "7g yeast", "10g salt", "Olive oil"], pairing: "Hearty Vegetable Beef Soup", toppings: "Flour dusting", instructions: "1. Knead 10 mins until elastic. 2. Rise 1h. 3. Shape boule, rise 45-60m. 4. Bake 220°C for 30-35m.", tips: "Steam in oven is crucial." },
-        { name: "Soft Milk Rolls", img: "soft_milk_rolls.png", program: "Oven (Manual)", ingredients: ["450g flour", "250ml lukewarm milk", "1 egg", "30g butter", "Sugar/Salt", "1.25 tsp yeast"], pairing: "Chicken Pot Pie Soup", toppings: "Egg wash", instructions: "1. Knead, rise 1h. 2. Divide into 10 balls. 3. Rise 30m. 4. Brush egg wash, bake 200°C 15m.", tips: "Milk creates a pillowy soft crumb." },
-        { name: "Focaccia (General)", img: "focaccia_general.png", program: "Oven", ingredients: ["300g flour", "170ml water", "Olive oil", "Salt", "Yeast"], pairing: "Minestrone", toppings: "Rosemary & Sea salt", instructions: "1. Knead, roll rectangle. 2. Dimple, rise 30m. 3. Drizzle oil, bake 200°C.", tips: "Add olives into dimples." },
-        { name: "Naan Bread", img: "naan_bread.png", program: "Frying Pan", ingredients: ["300g flour", "125ml yogurt", "Yeast", "Baking powder", "Garlic butter"], pairing: "Mulligatawny Soup", toppings: "Garlic butter & Herbs", instructions: "1. Knead, rise 1h. 2. Roll ovals. 3. Bake in dry hot pan 2m per side until charred.", tips: "Brush with garlic butter immediately." },
-        { name: "French Stick (Baguette)", img: "french_stick_baguette.png", program: "Oven", ingredients: ["450g flour", "290ml water", "10g butter", "Yeast", "Salt"], pairing: "French Onion Soup", toppings: "Flour dusting", instructions: "1. Rise, shape cylinders. 2. Rise 50m. 3. Score top. 4. Bake 220°C with water spray.", tips: "Score diagonally." },
-        { name: "Cheese & Onion Rolls", img: "cheese_onion_rolls.png", program: "Oven", ingredients: ["White dough", "1 onion (chopped)", "100g cheese"], pairing: "Roasted Tomato Soup", toppings: "Extra cheese", instructions: "1. Top flattened balls with onion/cheese. 2. Rise 20m. 3. Bake 200°C 20m.", tips: "Sauté onion first." },
-        { name: "Whole Wheat Sunflower Rolls", img: "whole_wheat_sunflower_seed_rolls.png", program: "Oven", ingredients: ["450g Wheat mix", "300ml water", "Butter", "Seeds"], pairing: "Dutch Brown Bean Soup", toppings: "Sunflower seeds", instructions: "1. Knead seeds in. 2. Divide 12 balls. 3. Rise 40-60m. 4. Bake 200°C.", tips: "Substitute with pumpkin seeds." },
-        { name: "Bagels", img: "bagels.png", program: "Boil & Bake", ingredients: ["450g flour", "250ml water", "Oil", "Yeast", "Sugar"], pairing: "Creamy Zucchini-Herb Soup", toppings: "Poppy seeds", instructions: "1. Form rings, rise 30m. 2. Boil 1m per side. 3. Bake 200°C 25m.", tips: "Boiling creates chewiness." },
-        { name: "Pita Bread", img: "pita_bread.png", program: "Oven", ingredients: ["300g flour", "180ml water", "Oil", "Yeast"], pairing: "Chickpea & Sweet Potato Soup", toppings: "None", instructions: "1. Roll thin discs. 2. Bake 240°C 5-8m until puffed.", tips: "Keep soft, don't overbake." },
-        { name: "Hot Cross Buns", img: "hot_cross_buns.png", program: "Oven", ingredients: ["475g flour", "Milk", "Fruit", "Spices", "Yeast"], pairing: "Spicy Carrot Soup", toppings: "Flour cross & Glaze", instructions: "1. Divide 12 buns. 2. Rise 30m. 3. Pipe crosses. 4. Bake 200°C. Glaze while hot.", tips: "Use apricot jam for glaze." },
-        { name: "Potato Bread (Rosemary)", img: "potato_bread_with_rosemary.png", program: "Oven", ingredients: ["400g spelt flour", "150g mashed potato", "Rosemary", "Water"], pairing: "Hearty Vegetable Beef Soup", toppings: "Rosemary", instructions: "1. Knead all, rise. 2. Shape round, bake 210°C 35m.", tips: "Stays soft." },
-        { name: "Steamed Buns (Bapao)", img: "steamed_buns_broodje_bapao.png", program: "Steamer", ingredients: ["250g flour", "150ml milk", "Yeast", "Meat filling"], pairing: "Mulligatawny Soup", toppings: "Parchment paper", instructions: "1. Fill balls, seal. 2. Rise 20m. 3. Steam 12m.", tips: "Serve with chili sauce." },
-        { name: "Crusty Herb Bread", img: "crusty_bread_with_rosemary_thyme.png", program: "Oven", ingredients: ["500g flour", "300ml water", "Herbs"], pairing: "Minestrone", toppings: "Herbs", instructions: "1. Knead 20m, rise 1.5h. 2. Score, bake 230°C.", tips: "Artisan style." },
-        { name: "Keto Yeast Bread", img: "keto_low_carb_yeast_bread.png", program: "Oven", ingredients: ["Vital gluten", "Soy flour", "Yeast", "Warm water"], pairing: "Creamy Zucchini-Herb Soup", toppings: "None", instructions: "1. Knead well (rubbery). 2. Rise 90m. 3. Bake 175°C.", tips: "Gluten is essential for structure." },
-        { name: "Easter Bunny Rolls", img: "easter_bunny_rolls.png", program: "Oven", ingredients: ["450g flour", "Milk", "Butter", "Sugar/Cinnamon"], pairing: "Chicken Pot Pie Soup", toppings: "Icing", instructions: "1. Fill dough, slice. 2. Form ears. 3. Bake 190°C.", tips: "Kid favorite." },
-        { name: "Six-Seed Small Loaf", img: "six_seed_small_loaf.png", program: "Oven", ingredients: ["250g wholemeal", "Mixed seeds", "Honey"], pairing: "Dutch Brown Bean Soup", toppings: "Seeds", instructions: "1. Toast seeds. 2. Knead, shape boule. 3. Bake 200°C.", tips: "Toasting seeds adds depth." },
-        { name: "Tomato & Parmesan Bread", img: "tomato_parmesan_bread.png", program: "Oven", ingredients: ["500g flour", "Sundried tomatoes", "Parmesan"], pairing: "Roasted Tomato Soup", toppings: "Parmesan", instructions: "1. Add tomato/cheese at end of kneading. 2. Bake 200°C.", tips: "Savory Italian snack." },
-        { name: "GF Christmas Bread", img: "gluten_free_christmas_bread_with_nuts.png", program: "Oven", ingredients: ["Rice flour", "Potato starch", "Psyllium", "Nuts"], pairing: "Chicken Pot Pie Soup", toppings: "Mixed nuts", instructions: "1. Mix wet/dry. 2. Fold in nuts. 3. Rise 50m. 4. Bake 190°C.", tips: "Psyllium husk binds the dough." }
+        { 
+            name: "Classic White Artisan Loaf", 
+            img: "classic_white_artisan_loaf.png", 
+            pairing: "Hearty Vegetable Beef Soup", 
+            ingredients: ["500g white bread flour", "300ml lukewarm water", "7g dried yeast", "10g salt", "Splash of olive oil"], 
+            instructions: ["Mix ingredients and knead until elastic.", "Let rise for 1 hour.", "Knock back and shape into a ball.", "Let rise again for 45-60 minutes.", "Bake at 220°C for 30-35 minutes."], 
+            tips: "Place a bowl of water in the oven for a crusty exterior." 
+        },
+        { 
+            name: "Soft Milk Rolls", 
+            img: "soft_milk_rolls.png", 
+            pairing: "Chicken Pot Pie Soup", 
+            ingredients: ["450g bread flour", "250ml lukewarm milk", "1 egg (beaten)", "30g butter", "1 tbsp sugar", "1 tsp salt", "1.25 tsp yeast"], 
+            instructions: ["Knead dough and let rise.", "Divide into 8-10 pieces and shape into balls.", "Rise for 20-30 minutes.", "Brush with egg wash.", "Bake at 200°C for 10-15 minutes."], 
+            tips: "Milk creates a much softer crumb than water." 
+        },
+        { 
+            name: "Focaccia", 
+            img: "focaccia.png", 
+            pairing: "Minestrone", 
+            ingredients: ["300g bread flour", "170ml water", "1 tbsp olive oil", "1 tsp salt", "½ tsp yeast"], 
+            instructions: ["Knead dough.", "Roll out rectangle on baking tray.", "Dimple surface with fingers.", "Rise for 20-30 mins.", "Bake at 200°C for 20-30 mins."], 
+            tips: "Add rosemary and sea salt as toppings." 
+        },
+        { 
+            name: "Naan Bread", 
+            img: "naan_bread.png", 
+            pairing: "Mulligatawny Soup", 
+            ingredients: ["300g flour", "125ml natural yogurt", "1 tsp yeast", "1 tsp baking powder", "Garlic butter"], 
+            instructions: ["Knead dough, rise 1 hour.", "Divide into balls, roll flat.", "Bake in hot dry frying pan 2 mins per side."], 
+            tips: "Brush with garlic butter immediately after cooking." 
+        },
+        { 
+            name: "French Stick (Baguette)", 
+            img: "french_stick_baguette.png", 
+            pairing: "Mulligatawny Soup", 
+            ingredients: ["450g flour", "290ml water", "10g butter", "Yeast", "Salt"], 
+            instructions: ["Rise, shape cylinders. Rise 50m.", "Score top diagonally.", "Bake at 220°C with water spray."], 
+            tips: "Water spray creates the crunchy crust." 
+        },
+        { 
+            name: "Cheese & Onion Rolls", 
+            img: "cheese_onion_rolls.png", 
+            pairing: "Roasted Tomato Soup", 
+            ingredients: ["White dough", "1 chopped onion", "100g grated cheese"], 
+            instructions: ["Flatten dough balls.", "Top with onion and cheese.", "Bake at 200°C for 20 mins."], 
+            tips: "Sauté the onion slightly beforehand." 
+        },
+        { 
+            name: "Sunflower Seed Rolls", 
+            img: "whole_wheat_sunflower_seed_rolls.png", 
+            pairing: "Dutch Brown Bean Soup", 
+            ingredients: ["Whole wheat flour", "300ml water", "Seeds"], 
+            instructions: ["Divide into balls.", "Rise 40m.", "Bake at 200°C for 25m."], 
+            tips: "Substitute with pumpkin seeds." 
+        },
+        { 
+            name: "Bagels", 
+            img: "bagels.png", 
+            pairing: "Creamy Zucchini-Herb Soup", 
+            ingredients: ["450g flour", "250ml water", "Oil", "Yeast", "Sugar"], 
+            instructions: ["Form rings, rise 30m.", "Boil 1m per side.", "Bake 200°C 25m."], 
+            tips: "Boiling creates the chewy texture." 
+        },
+        { 
+            name: "Pita Bread", 
+            img: "pita_bread.png", 
+            pairing: "Chickpea & Sweet Potato Soup", 
+            ingredients: ["300g flour", "180ml water", "Yeast"], 
+            instructions: ["Roll thin discs.", "Bake at 240°C for 5-8m until puffed."], 
+            tips: "Do not overbake." 
+        },
+        { 
+            name: "Hot Cross Buns", 
+            img: "hot_cross_buns.png", 
+            pairing: "Spicy Carrot Soup", 
+            ingredients: ["475g flour", "Milk", "Fruit", "Spices", "Yeast"], 
+            instructions: ["Divide 12 buns.", "Rise 30m.", "Pipe flour paste crosses.", "Bake 200°C. Glaze while hot."], 
+            tips: "Glaze with apricot jam." 
+        },
+        { 
+            name: "Potato Bread (Rosemary)", 
+            img: "potato_bread_with_rosemary.png", 
+            pairing: "Spicy Carrot Soup", 
+            ingredients: ["400g flour", "150g mashed potato", "Rosemary", "Water"], 
+            instructions: ["Knead all, rise.", "Shape round boule.", "Bake 210°C 35m."], 
+            tips: "Stays soft for days." 
+        },
+        { 
+            name: "Steamed Buns (Bapao)", 
+            img: "steamed_buns_broodje_bapao.png", 
+            pairing: "Mulligatawny Soup", 
+            ingredients: ["250g flour", "Yeast", "150ml milk", "Meat/Veg filling"], 
+            instructions: ["Fill balls, fold, rise 20m.", "Steam in bamboo basket 12m."], 
+            tips: "Use parchment paper underneath." 
+        },
+        { 
+            name: "Crusty Herb Bread", 
+            img: "crusty_bread_with_rosemary_thyme.png", 
+            pairing: "Hearty Vegetable Beef Soup", 
+            ingredients: ["500g flour", "300ml water", "Herbs"], 
+            instructions: ["Knead 20m, rise 1.5h.", "Score top.", "Bake at 230°C."], 
+            tips: "Steam is vital for crust." 
+        },
+        { 
+            name: "Keto Yeast Bread", 
+            img: "keto_low_carb_yeast_bread.png", 
+            pairing: "Creamy Zucchini-Herb Soup", 
+            ingredients: ["Wheat gluten", "Soy flour", "Warm water", "Yeast"], 
+            instructions: ["Knead well (rubbery dough).", "Rise 90m.", "Bake 175°C."], 
+            tips: "Gluten provides the structure." 
+        },
+        { 
+            name: "Easter Bunny Rolls", 
+            img: "easter_bunny_rolls.png", 
+            pairing: "Chicken Pot Pie Soup", 
+            ingredients: ["450g flour", "Milk", "Butter", "Sugar", "Cinnamon"], 
+            instructions: ["Fill dough, slice.", "Form ears.", "Bake 190°C."], 
+            tips: "Kids love these." 
+        },
+        { 
+            name: "Six-Seed Small Loaf", 
+            img: "six_seed_small_loaf.png", 
+            pairing: "Dutch Brown Bean Soup", 
+            ingredients: ["250g wholemeal", "Seeds", "Honey"], 
+            instructions: ["Toast seeds.", "Knead, shape boule.", "Bake 200°C."], 
+            tips: "Toasting seeds adds depth." 
+        },
+        { 
+            name: "Tomato & Parmesan Bread", 
+            img: "tomato_parmesan_bread.png", 
+            pairing: "Roasted Tomato Soup", 
+            ingredients: ["500g flour", "Sundried tomatoes", "Parmesan"], 
+            instructions: ["Add tomatoes/cheese at end of kneading.", "Bake 200°C."], 
+            tips: "Savory Italian flavor." 
+        },
+        { 
+            name: "GF Christmas Bread", 
+            img: "gluten_free_christmas_bread_with_nuts.png", 
+            pairing: "Chicken Pot Pie Soup", 
+            ingredients: ["Rice flour", "Potato starch", "Psyllium", "Nuts"], 
+            instructions: ["Mix wet/dry. Fold in nuts.", "Rise 50m. Bake 190°C."], 
+            tips: "Psyllium husk binds the dough." }
     ];
 
     const SOUP_DB = [
@@ -95,81 +318,81 @@
             name: "Hearty Vegetable Beef Soup", 
             img: "hearty_vegetable_beef_soup.png", 
             pairing: "Classic White Artisan Loaf", 
-            ingredients: ["1 lb beef (small dice)", "3 qt beef broth", "4 oz butter", "2 lb mirepoix", "6 oz turnip", "6 oz green beans", "6 oz tomato concassée", "6 oz corn", "Oregano/Thyme", "Salt/Pepper"], 
-            instructions: "1. Sweat mirepoix and turnip in butter until tender. <br>2. Add garlic, broth, and beef. <br>3. Simmer with herb sachet for ~1 hour. <br>4. Add beans, tomatoes, corn, and herbs. Simmer 15 more minutes.", 
-            tips: "Stir in turnip tops or arugula at the end." 
+            ingredients: ["4 oz butter", "2 lb mirepoix (onions, carrots, celery)", "6 oz turnip", "4 garlic cloves", "3 qt beef broth", "1 lb beef (small dice)", "2 bay leaves, ½ tsp thyme, ½ tsp peppercorns", "6 oz green beans", "6 oz tomato concassée", "6 oz corn", "Fresh oregano & thyme"], 
+            instructions: ["Sweat mirepoix and turnip in butter until tender.", "Add garlic, sauté lightly, then add beef broth and beef.", "Simmer with sachet for ~1 hour until beef is tender.", "Add green beans, tomatoes, corn, and fresh herbs.", "Simmer for another 15 minutes."], 
+            tips: "Shred turnip tops or arugula and stir in near the end for extra nutrition." 
         },
         { 
             name: "Chicken Pot Pie Soup (Creamy)", 
             img: "chicken_pot_pie_soup.png", 
             pairing: "Soft Milk Rolls", 
-            ingredients: ["1 lb chicken (diced)", "Mirepoix", "Potatoes (cubed)", "4 tbsp Butter", "4 tbsp Flour", "Chicken stock", "Heavy cream", "Peas/Corn", "Thyme"], 
-            instructions: "1. Sauté mirepoix and chicken. Add thyme. <br>2. Melt butter, whisk in flour (roux) for 1 min. <br>3. Add stock and potatoes. Simmer until tender. <br>4. Stir in cream (do not boil).", 
-            tips: "If too thin, use beurre manié to thicken." 
+            ingredients: ["Chicken (diced)", "Mirepoix", "4 tbsp butter", "4 tbsp flour", "Chicken stock", "Cubed potatoes", "Cream", "Peas/Corn", "Thyme"], 
+            instructions: ["Sauté mirepoix and chicken until cooked.", "Add butter, whisk in flour to make a roux; cook 1 min.", "Add stock and potatoes. Simmer until tender.", "Season and stir in cream (do not boil once cream is added)."], 
+            tips: "If the soup is too thin, use a cornstarch slurry to thicken." 
         },
         { 
             name: "Dutch Brown Bean Soup", 
             img: "dutch_brown_bean_soup.png", 
             pairing: "French Stick (Baguette)", 
-            ingredients: ["500g brown beans", "1 onion", "2 celery stalks", "1 leek", "2 potatoes", "1 beef shank", "1.5L water", "2 beef bouillon cubes", "1 bay leaf", "1 rookworst (sliced)"], 
-            instructions: "1. Soak beans overnight. <br>2. Sauté onion/celery/leek until glazed. <br>3. Add water, meat, bouillon, potatoes, and drained beans. <br>4. Simmer 1.5 hours. Add sausage in last 20 mins.", 
-            tips: "Better the next day. Purée some beans for starchiness." 
+            ingredients: ["500 g dried brown beans", "1 onion", "2 celery stalks", "1 leek", "2 potatoes", "1 beef shank", "1.5 liters water", "2 beef bouillon cubes", "1 bay leaf", "1 smoked sausage (rookworst)"], 
+            instructions: ["Soak beans overnight.", "Sauté onion, celery, and leek until glazed.", "Add water, beef shank, bouillon, potatoes, and beans.", "Simmer for 1.5 hours.", "Add sliced sausage in last 20 mins."], 
+            tips: "Better the next day. Purée a portion of the beans for extra starchiness." 
         },
         { 
             name: "Mulligatawny Soup", 
             img: "mulligatawny_soup.png", 
             pairing: "Naan Bread", 
-            ingredients: ["1 lb chicken (dice)", "2 qt chicken stock", "4 oz butter", "3 lb fine mirepoix", "3 oz flour", "2 tbsp curry powder", "4 oz green apple (dice)", "4 oz mushrooms", "1 pt half-and-half (warm)"], 
-            instructions: "1. Sauté mirepoix 10 mins without browning. <br>2. Add flour and curry powder to form roux. <br>3. Add stock. Simmer 15 mins. <br>4. Add chicken, apple, mushrooms. Cook 15 mins. <br>5. Stir in warm cream.", 
-            tips: "Serve over a small mound of rice." 
+            ingredients: ["4 oz butter", "3 lb mirepoix", "3 oz flour", "2 tbsp curry powder", "2 qt chicken stock", "1 lb cooked chicken", "4 oz green apple", "4 oz mushrooms", "1 pt warm half-and-half"], 
+            instructions: ["Sauté mirepoix in butter for 10 mins without browning.", "Stir in flour and curry powder to form a roux.", "Add stock and simmer 15 mins.", "Add diced chicken, apple, and mushrooms. Cook 15 mins.", "Stir in warm cream."], 
+            tips: "Serve over a small mound of rice for a full meal." 
         },
         { 
             name: "Minestrone (Rich Italian)", 
             img: "minestrone.png", 
             pairing: "Focaccia", 
-            ingredients: ["Mirepoix", "Beans", "Stock", "Pasta", "Parmesan"], 
-            instructions: "Sauté veg. Add stock, beans, and pasta. Simmer until al dente. Garnish with basil.", 
-            tips: "Standard classic." 
+            ingredients: ["2 tbsp olive oil", "Mirepoix", "200g green beans", "100g kidney beans", "1L veg stock", "175g pasta", "Parmesan"], 
+            instructions: ["Sauté mirepoix for 10 mins.", "Add beans, stock, and pasta.", "Simmer until pasta is tender.", "Garnish with basil and Parmesan."], 
+            tips: "A hearty classic meant for dipping." 
         },
         { 
             name: "Spicy Carrot Soup", 
             img: "spicy_carrot.png", 
             pairing: "Potato Rosemary Bread", 
-            ingredients: ["Carrots", "Onion", "Spices", "Stock", "Yogurt"], 
-            instructions: "Toast spices. Simmer carrots in stock. Blend smooth. Swirl in yogurt.", 
-            tips: "Toast spices first." 
+            ingredients: ["650g carrots", "1 red onion", "2 cloves garlic", "2 tbsp spices (cumin, coriander)", "1L stock", "Yogurt"], 
+            instructions: ["Toast spices for 2 mins.", "Sauté onion/garlic, then add carrots and stock.", "Simmer 25 mins.", "Blend smooth and swirl in yogurt."], 
+            tips: "Toasting the spices first is essential for flavor." 
         },
         { 
             name: "Creamy Zucchini-Herb Soup", 
             img: "zucchini_herb.png", 
             pairing: "Bagels", 
-            ingredients: ["Zucchini", "Arugula", "Herbs", "Cream cheese"], 
-            instructions: "Simmer veg 15m. Blend. Stir in cream cheese while hot.", 
-            tips: "Use less stock." 
+            ingredients: ["800g zucchini", "Spring onion", "Herbs (basil, parsley)", "Cream cheese", "Stock"], 
+            instructions: ["Simmer veg for 15m.", "Blend until smooth.", "Stir in cream cheese while hot."], 
+            tips: "Use less stock than other soups; zucchini is very wet." 
         },
         { 
             name: "Creamy Mustard Soup", 
             img: "creamy_mustard.png", 
             pairing: "Basic White Bread", 
-            ingredients: ["Leek", "Potato", "Mustard", "Cream"], 
-            instructions: "Fry leek/potato. Simmer with stock and mustard. Blend. Add cream.", 
-            tips: "Use coarse mustard." 
+            ingredients: ["Leek", "Potato", "Mustard", "Cream", "Butter"], 
+            instructions: ["Fry leek/potato in butter.", "Simmer with stock and mustard for 15m.", "Puree and add cream."], 
+            tips: "Use coarse Groninger mustard for texture." 
         },
         { 
             name: "Chickpea & Sweet Potato", 
             img: "chickpea_sweet_potato.png", 
             pairing: "Pita Bread", 
-            ingredients: ["Chickpeas", "Sweet potato", "Pepper", "Lime"], 
-            instructions: "Simmer all 20m. Puree smooth. Finish with lime juice.", 
-            tips: "Naturally thickens." 
+            ingredients: ["Chickpeas", "Sweet potato", "Red pepper", "Lime juice", "Stock"], 
+            instructions: ["Simmer all for 20m.", "Puree smooth.", "Finish with lime juice."], 
+            tips: "Potato starch makes it naturally creamy." 
         },
         { 
             name: "Roasted Tomato Soup", 
             img: "roasted_tomato.png", 
             pairing: "Tomato & Parmesan Bread", 
-            ingredients: ["Tomatoes", "Balsamic", "Basil"], 
-            instructions: "Sauté veg, deglaze with balsamic, simmer 15m, blend.", 
-            tips: "Great with cheese bread." 
+            ingredients: ["Tomatoes", "Balsamic vinegar", "Red pepper", "Basil", "Stock"], 
+            instructions: ["Sauté veg.", "Deglaze with balsamic.", "Simmer with tomatoes and stock for 15m.", "Blend with fresh basil."], 
+            tips: "Balsamic balances the acidity of the tomatoes." 
         }
     ];
 
@@ -207,13 +430,13 @@
         const pairingIcon = (type === 'soup') ? '🥖' : '🥣';
         view.innerHTML = `
             <button onclick="navigate('${type}')" style="background:none; border:none; color:#888; margin-bottom:1rem; cursor:pointer; font-weight:bold;">⬅ BACK</button>
-            ${item.pairing ? `<div style="background:#f1f8e9; padding:12px; border-radius:8px; margin-bottom:15px; color:#2e7d32; font-weight:bold; font-size:0.85rem;">${pairingIcon} PAIRS WITH: ${item.pairing}</div>` : ''}
+            ${item.pairing && item.pairing !== 'None' ? `<div style="background:#f1f8e9; padding:12px; border-radius:8px; margin-bottom:15px; color:#2e7d32; font-weight:bold; font-size:0.85rem;">${pairingIcon} PAIRS WITH: ${item.pairing}</div>` : ''}
             <img src="${item.img}" class="img-hero" onerror="this.src='https://via.placeholder.com/450x200?text=${item.name}'">
             <h2 style="margin:0;">${item.name}</h2>
-            ${item.program ? `<div class="info-block"><strong>Method:</strong> ${item.program}</div>` : ''}
+            ${item.program ? `<div class="info-block"><strong>Method/Program:</strong> ${item.program}</div>` : ''}
             <div class="info-block"><strong>Ingredients:</strong><ul>${item.ingredients.map(i => `<li>${i}</li>`).join('')}</ul></div>
             ${item.toppings ? `<div class="info-block"><strong>Toppings:</strong> ${item.toppings}</div>` : ''}
-            <div class="info-block"><strong>Instructions:</strong><br>${item.instructions || item.method}</div>
+            <div class="info-block"><strong>Instructions:</strong><ol>${item.instructions.map(step => `<li>${step}</li>`).join('')}</ol></div>
             <div class="pro-tip"><strong>Expert Tips:</strong><br>${item.tips}</div>
         `;
         view.scrollTo(0,0);
@@ -252,7 +475,7 @@
         view.innerHTML = "Loading...";
         const r = await fetch(`https://api.spoonacular.com/recipes/${id}/information?apiKey=${API_KEY}`);
         const data = await r.json();
-        renderDetail({ name: data.title, img: data.image, ingredients: data.extendedIngredients.map(i => i.original), instructions: data.instructions, tips: "External source." }, 'search');
+        renderDetail({ name: data.title, img: data.image, ingredients: data.extendedIngredients.map(i => i.original), instructions: [data.instructions.replace(/<[^>]*>?/gm, '')], tips: "External source." }, 'search');
     }
 
     navigate('bread');
